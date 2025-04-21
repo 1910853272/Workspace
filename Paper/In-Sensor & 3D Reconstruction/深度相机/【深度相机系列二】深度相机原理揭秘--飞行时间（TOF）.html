@@ -1,0 +1,1179 @@
+<!doctype html>
+<html lang="zh-CN">
+ <head> 
+  <meta charset="utf-8"> 
+  <link rel="canonical" href="https://blog.csdn.net/electech6/article/details/78349107"> 
+  <meta http-equiv="content-type" content="text/html; charset=utf-8"> 
+  <meta name="renderer" content="webkit"> 
+  <meta name="force-rendering" content="webkit"> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
+  <meta name="report" content="{&quot;pid&quot;: &quot;blog&quot;, &quot;spm&quot;:&quot;1001.2101&quot;}"> 
+  <meta name="referrer" content="always"> 
+  <meta http-equiv="Cache-Control" content="no-siteapp">
+  <link rel="alternate" media="handheld" href="#"> 
+  <meta name="shenma-site-verification" content="5a59773ab8077d4a62bf469ab966a63b_1497598848"> 
+  <meta name="applicable-device" content="pc"> 
+  <link href="https://g.csdnimg.cn/static/logo/favicon32.ico" rel="shortcut icon" type="image/x-icon"> 
+  <title>【深度相机系列二】深度相机原理揭秘--飞行时间（TOF）_深度相机成像原理图-CSDN博客</title>  
+  <meta name="keywords" content="深度相机成像原理图"> 
+  <meta name="csdn-baidu-search" content="{&quot;autorun&quot;:true,&quot;install&quot;:true,&quot;keyword&quot;:&quot;深度相机成像原理图&quot;}"> 
+  <meta name="description" content="文章浏览阅读3.9w次，点赞21次，收藏175次。本文深入探讨了飞行时间（TOF）深度相机的工作原理，包括脉冲调制和连续波调制两种方法，分析了各自的优缺点，并提及在实际应用中的设备示例，如微软的Kinect 2。TOF相机在远距离测量中表现出优越性，但在近距离高精度测量上存在挑战。
+"> 
+  <link rel="stylesheet" type="text/css" href="https://csdnimg.cn/release/blogv2/dist/pc/css/detail_enter-097f33faa6.min.css">  
+  <link rel="stylesheet" type="text/css" href="https://csdnimg.cn/release/blogv2/dist/pc/themesSkin/skin-yellow/skin-yellow-28d34ab5fa.min.css">    
+  <meta name="toolbar" content="{&quot;type&quot;:&quot;0&quot;,&quot;fixModel&quot;:&quot;1&quot;}">    
+  <link rel="stylesheet" type="text/css" href="https://csdnimg.cn/public/sandalstrap/1.4/css/sandalstrap.min.css"> 
+  <style>
+        .MathJax, .MathJax_Message, .MathJax_Preview{
+            display: none
+        }
+    </style>    
+ 	<style>
+	main div.blog-content-box pre {
+		max-height: 100%;
+		overflow-y: hidden;
+	}
+	</style>
+ </head>  
+ <body class="nodata  " style=""> 
+  <div id="toolbarBox" style="min-height: 48px;"></div>    
+  <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/pc/css/blog_code-01256533b5.min.css"> 
+  <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/chart-3456820cac.css"> 
+  <link rel="stylesheet" href="https://g.csdnimg.cn/lib/swiper/6.0.4/css/swiper.css">   
+  <div class="main_father clearfix d-flex justify-content-center mainfather-concision" style="height:100%;"> 
+   <div class="container clearfix container-concision" id="mainBox">  
+    <main>  
+     <div class="blog-content-box"> 
+      <div class="article-header-box"> 
+       <div class="article-header"> 
+        <div class="article-title-box"> 
+         <h1 class="title-article" id="articleContentId">【深度相机系列二】深度相机原理揭秘--飞行时间（TOF）</h1> 
+        </div> 
+        <div class="article-info-box"> 
+         <div class="up-time">
+          最新推荐文章于&nbsp;2019-09-30 10:07:01&nbsp;发布
+         </div> 
+         <div class="article-bar-top"> 
+          <img class="article-type-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/original.png" alt=""> 
+          <div class="bar-content"> 
+           <a href="https://mall.csdn.net/vip" data-report-query="spm=3001.10404" data-report-click="{&quot;spm&quot;:&quot;3001.10404&quot;}" data-report-view="{&quot;spm&quot;:&quot;3001.10404&quot;}" class="article-vip-box" target="_blank"><img class="article-vip-img-new" src="https://csdnimg.cn/release/blogv2/dist/pc/img/identityVipNew.png" alt=""></a> 
+           <a class="follow-nickName " href="https://blog.csdn.net/electech6" target="_blank" rel="noopener" title="计算机视觉life">计算机视觉life</a> 
+           <img class="article-time-img article-heard-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCurrentTime2.png" alt=""> 
+           <span class="time blog-postTime" data-time="2017-10-26 09:10:01">最新推荐文章于&nbsp;2019-09-30 10:07:01&nbsp;发布</span> 
+           <div class="read-count-box"> 
+            <img class="article-read-img article-heard-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/articleReadEyes2.png" alt=""> 
+            <span class="read-count">阅读量3.9w</span> 
+            <a id="blog_detail_zk_collection" class="un-collection" data-report-click="{&quot;mod&quot;:&quot;popu_823&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4232&quot;,&quot;ab&quot;:&quot;new&quot;}"> <img class="article-collect-img article-heard-img un-collect-status isdefault" style="display:inline-block" src="https://csdnimg.cn/release/blogv2/dist/pc/img/tobarCollect2.png" alt=""> <img class="article-collect-img article-heard-img collect-status isactive" style="display:none" src="https://csdnimg.cn/release/blogv2/dist/pc/img/tobarCollectionActive2.png" alt=""> <span class="name">收藏</span> <span class="get-collection"> 175 </span> </a> 
+            <div class="read-count-box is-like"> 
+             <img class="article-read-img article-heard-img" style="display:none" id="is-like-imgactive-new" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newHeart2023Active.png" alt=""> 
+             <img class="article-read-img article-heard-img" style="display:block" id="is-like-img-new" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newHeart2023Black.png" alt=""> 
+             <span class="read-count" id="blog-digg-num">点赞数 21 </span> 
+            </div> 
+           </div> 
+          </div> 
+         </div> 
+         <div class="blog-tags-box"> 
+          <div class="tags-box artic-tag-box"> 
+           <span class="label">分类专栏：</span> 
+           <a class="tag-link" href="https://blog.csdn.net/electech6/category_7249798.html" target="_blank" rel="noopener">深度相机</a> 
+           <span class="label">文章标签：</span> 
+           <a rel="noopener" data-report-query="spm=1001.2101.3001.4223" data-report-click="{&quot;mod&quot;:&quot;popu_626&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4223&quot;,&quot;strategy&quot;:&quot;深度相机&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;extra&quot;:&quot;{\&quot;searchword\&quot;:\&quot;深度相机\&quot;}&quot;}" data-report-view="{&quot;mod&quot;:&quot;popu_626&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4223&quot;,&quot;strategy&quot;:&quot;深度相机&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;extra&quot;:&quot;{\&quot;searchword\&quot;:\&quot;深度相机\&quot;}&quot;}" class="tag-link" href="https://so.csdn.net/so/search/s.do?q=%E6%B7%B1%E5%BA%A6%E7%9B%B8%E6%9C%BA&amp;t=all&amp;o=vip&amp;s=&amp;l=&amp;f=&amp;viparticle=&amp;from_tracking_code=tag_word&amp;from_code=app_blog_art" target="_blank">深度相机</a> 
+           <a rel="noopener" data-report-query="spm=1001.2101.3001.4223" data-report-click="{&quot;mod&quot;:&quot;popu_626&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4223&quot;,&quot;strategy&quot;:&quot;TOF&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;extra&quot;:&quot;{\&quot;searchword\&quot;:\&quot;TOF\&quot;}&quot;}" data-report-view="{&quot;mod&quot;:&quot;popu_626&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4223&quot;,&quot;strategy&quot;:&quot;TOF&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;extra&quot;:&quot;{\&quot;searchword\&quot;:\&quot;TOF\&quot;}&quot;}" class="tag-link" href="https://so.csdn.net/so/search/s.do?q=TOF&amp;t=all&amp;o=vip&amp;s=&amp;l=&amp;f=&amp;viparticle=&amp;from_tracking_code=tag_word&amp;from_code=app_blog_art" target="_blank">TOF</a> 
+           <a rel="noopener" data-report-query="spm=1001.2101.3001.4223" data-report-click="{&quot;mod&quot;:&quot;popu_626&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4223&quot;,&quot;strategy&quot;:&quot;飞行时间&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;extra&quot;:&quot;{\&quot;searchword\&quot;:\&quot;飞行时间\&quot;}&quot;}" data-report-view="{&quot;mod&quot;:&quot;popu_626&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4223&quot;,&quot;strategy&quot;:&quot;飞行时间&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;extra&quot;:&quot;{\&quot;searchword\&quot;:\&quot;飞行时间\&quot;}&quot;}" class="tag-link" href="https://so.csdn.net/so/search/s.do?q=%E9%A3%9E%E8%A1%8C%E6%97%B6%E9%97%B4&amp;t=all&amp;o=vip&amp;s=&amp;l=&amp;f=&amp;viparticle=&amp;from_tracking_code=tag_word&amp;from_code=app_blog_art" target="_blank">飞行时间</a> 
+           <a rel="noopener" data-report-query="spm=1001.2101.3001.4223" data-report-click="{&quot;mod&quot;:&quot;popu_626&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4223&quot;,&quot;strategy&quot;:&quot;连续波调制&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;extra&quot;:&quot;{\&quot;searchword\&quot;:\&quot;连续波调制\&quot;}&quot;}" data-report-view="{&quot;mod&quot;:&quot;popu_626&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4223&quot;,&quot;strategy&quot;:&quot;连续波调制&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;extra&quot;:&quot;{\&quot;searchword\&quot;:\&quot;连续波调制\&quot;}&quot;}" class="tag-link" href="https://so.csdn.net/so/search/s.do?q=%E8%BF%9E%E7%BB%AD%E6%B3%A2%E8%B0%83%E5%88%B6&amp;t=all&amp;o=vip&amp;s=&amp;l=&amp;f=&amp;viparticle=&amp;from_tracking_code=tag_word&amp;from_code=app_blog_art" target="_blank">连续波调制</a> 
+          </div> 
+         </div> 
+         <div class="slide-content-box"> 
+          <div class="article-copyright"> 
+           <div class="creativecommons">
+             版权声明：本文为博主原创文章，遵循
+            <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener"> CC 4.0 BY-SA </a>版权协议，转载请附上原文出处链接和本声明。 
+           </div> 
+           <div class="article-source-link">
+             本文链接：
+            <a href="https://blog.csdn.net/electech6/article/details/78349107" target="_blank">https://blog.csdn.net/electech6/article/details/78349107</a> 
+           </div> 
+          </div> 
+         </div> 
+         <div class="operating"> 
+          <a class="href-article-edit slide-toggle">版权</a> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+      <div id="blogHuaweiyunAdvert"></div> 
+      <div class="ai-abstract-box"> 
+       <div class="ai-abstract"> 
+        <div class="abstract-content"> 
+         <img class="lock-img" src="https://img-home.csdnimg.cn/images/20240711042549.png" alt=""> 本文深入探讨了飞行时间（TOF）深度相机的工作原理，包括脉冲调制和连续波调制两种方法，分析了各自的优缺点，并提及在实际应用中的设备示例，如微软的Kinect 2。TOF相机在远距离测量中表现出优越性，但在近距离高精度测量上存在挑战。 
+        </div> 
+        <span>摘要由CSDN通过智能技术生成</span> 
+       </div> 
+      </div> 
+      <article class="baidu_pl"> 
+       <div id="article_content" class="article_content clearfix"> 
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/kdoc_html_views-1a98987dfd.css"> 
+        <link rel="stylesheet" href="https://csdnimg.cn/release/blogv2/dist/mdeditor/css/editerView/ck_htmledit_views-704d5b9767.css"> 
+        <div id="content_views" class="htmledit_views"> 
+         <p></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; text-align:left; word-wrap:break-word!important"> <span style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important; letter-spacing:0px; text-align:justify"><span style="font-size:18px"><span style="font-family:Arial">本文已经首发在个人微信公共号：</span><span style="font-family:Arial"><strong>计算机视觉life</strong>（微信号<span style="color:rgb(34,34,34); font-family:&quot;Helvetica Neue&quot;,&quot;Hiragino Sans GB&quot;,&quot;Microsoft YaHei&quot;,黑体,Arial,sans-serif">CV_life</span>）</span><span style="font-family:Arial">，欢迎关注！</span><br> </span></span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; text-align:left; word-wrap:break-word!important"> <span style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important; letter-spacing:0px; text-align:justify"><span style="font-family:Arial"><span style="font-size:18px"><br> </span></span></span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; text-align:left; word-wrap:break-word!important"> <span style="font-size:18px"><span style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important; letter-spacing:0px; text-align:justify">深度相机按照深度测量原理不同，一般分为：飞行时间法、结构光法、双目立体视觉法。本文</span><span style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important; letter-spacing:0px; text-align:justify">就来说一说飞行时间法。</span><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important; letter-spacing:0px"><span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">飞行时间是从Time of Flight直译过来的，简称TOF。其基本原理是通过连续发射光脉冲（一般为不可见光）到被观测物体上，然后接收从物体反射回去的光脉冲，通过探测光脉冲的飞行（往返）时间来计算被测物体离相机的距离。</span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">TOF法根据调制方法的不同，一般可以分为两种：脉冲调制（Pulsed Modulation）和连续波调制（Continuous Wave Modulation）。</span></p> 
+         <p style="text-align:center; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><img src="https://img-blog.csdn.net/20171026091120389?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZWxlY3RlY2g2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" width="700"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; text-align:center; word-wrap:break-word!important"> <span style="margin:0px; padding:0px; max-width:100%; letter-spacing:0px; word-wrap:break-word!important"><span style="font-size:18px">飞行时间法深度测量基本原理示意图</span></span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; text-align:center; word-wrap:break-word!important"> <span style="margin:0px; padding:0px; max-width:100%; letter-spacing:0px; word-wrap:break-word!important"><span style="font-size:18px"><br> </span></span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="text-align:center; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:32px">脉冲调制</span></p> 
+         <p style="text-align:center; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:32px"><br> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">脉冲调制方案的原理比较简单，如下图所示。它直接根据脉冲发射和接收的时间差来测算距离。</span></p> 
+         <p style="text-align:center; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><img src="https://img-blog.csdn.net/20171026091144475?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZWxlY3RlY2g2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; text-align:center; word-wrap:break-word!important"> <span style="margin:0px; padding:0px; max-width:100%; letter-spacing:0px; word-wrap:break-word!important"><span style="font-size:18px">光脉冲法工作原理示意图</span></span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">脉冲调制方案的照射光源一般采用方波脉冲调制，这是因为它用数字电路来实现相对容易。接收端的每个像素都是由一个感光单元（如光电二极管）组成，它可以将入射光转换为电流，感光单元连接着多个高频转换开关（下图的G0，G1）可以把电流导入不同的可以储存电荷(下图S0，S1)的电容里。</span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="text-align:center; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><img src="https://img-blog.csdn.net/20171026091230408?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZWxlY3RlY2g2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" width="700"><br> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">相机上的控制单元打开光源然后再关闭，发出一个光脉冲。在同一时刻，控制单元打开和关闭接收端的电子快门。接收端接收到的电荷S0被存储在感光元件中。</span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">然后，控制单元第二次打开并关闭光源。这次快门打开时间较晚，即在光源被关闭的时间点打开。新接收到的电荷S1也被存储起来。具体过程如下图所示。</span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; text-align:center; word-wrap:break-word!important"> <span style="font-size:18px"><img src="https://img-blog.csdn.net/20171026091156202?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZWxlY3RlY2g2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""><br> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">因为单个光脉冲的持续时间非常短，此过程会重复几千次，直到达到曝光时间。然后感光传感器中的值会被读出，实际距离可以根据这些值来计算。</span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">记光的速度为c，tp为光脉冲的持续时间， S0表示较早的快门收集的电荷， S1表示延迟的快门收集的电荷，那么距离d可以由如下公式计算：</span></p> 
+         <span style="font-size:18px"></span> 
+         <div style="text-align:center"> 
+          <img src="https://img-blog.csdn.net/20171026091250736?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZWxlY3RlY2g2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""> 
+         </div> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">最小的可测量距离是：在较早的快门期间S0中收集了所有的电荷，而在延迟的快门期间S1没有收集到电荷，即S1 = 0。代入公式会得出最小可测量距离d=0。</span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">最大的可测量的距离是：在S1中收集了所有电荷，而在S0中根本没有收集到电荷。然后，该公式得出d= 0.5 x c × tp。因此最大可测量距离是通过光脉冲宽度来确定的。例如，tp = 50 ns，代入上式，得到最大测量距离d = 7.5m。</span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">优点：</span></p> 
+         <ol class="list-paddingleft-2" style="margin:0px; padding:0px 0px 0px 30px; max-width:100%; word-wrap:break-word!important">
+          <li style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">测量方法简单，响应较快</span></p> </li>
+          <li style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">由于发射端能量较高，所以一定程度上降低了背景光的干扰</span></p> </li>
+         </ol> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">缺点：</span></p> 
+         <ol class="list-paddingleft-2" style="margin:0px; padding:0px 0px 0px 30px; max-width:100%; word-wrap:break-word!important">
+          <li style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">发射端需要产生高频高强度脉冲，对物理器件性能要求很高</span></p> </li>
+          <li style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">对时间测量精度要求较高</span></p> </li>
+          <li style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">环境散射光对测量结果有一定影响</span></p> </li>
+         </ol> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="text-align:center; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:32px">连续波调制</span></p> 
+         <p style="text-align:center; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:32px"><br> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">实际应用中，通常采用的是正弦波调制。由于接收端和发射端正弦波的相位偏移和物体距离摄像头的距离成正比(见后面推导)，因此可以利用相位偏移来测量距离。</span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="text-align:center; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><img src="https://img-blog.csdn.net/20171026091420950?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZWxlY3RlY2g2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" width="700"><br> </span></p> 
+         <p style="text-align:center; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">连续波调制原理示意图</span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">连续波调制的测量原理相对脉冲调制来说复杂一些，我们以最常用的连续正弦波调制来推导一下测量的原理。</span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="text-align:center; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><img src="https://img-blog.csdn.net/20171026091434849?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZWxlY3RlY2g2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""><br> </span></p> 
+         <p style="text-align:center; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">连续正弦波调制测量方法示意图</span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">连续正弦波调制测量方法，具体的推导过程如下。序号1-9对应下图的公式1-9。</span></p> 
+         <ol class="list-paddingleft-2" style="margin:0px; padding:0px 0px 0px 30px; max-width:100%; word-wrap:break-word!important">
+          <li style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">假设发射的正弦信号s(t)振幅是a，调制频率是f</span></p> </li>
+          <li style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">经过时延 △t后接收到的信号为接收r(t)，衰减后的振幅为A，强度偏移（由环境光引起）为B</span></p> </li>
+          <li style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">四个采样时间间隔相等，均为T/4</span></p> </li>
+          <li style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">根据上述采样时间可以列出四个方程组</span></p> </li>
+          <li style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">从而可以计算出发射和接收的正弦信号的相位偏移△φ</span></p> </li>
+          <li style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">据此可以根据（6）中公式计算物体和深度相机的距离d</span></p> </li>
+          <li style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">接收信号的衰减后的振幅A的计算结果</span></p> </li>
+          <li style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">接收信号强度偏移B的计算结果，反映了环境光</span></p> </li>
+          <li style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">A, B的值间接的反应了深度的测量精度，深度测量方差可以用公式9近似表示。</span></p> <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> </li>
+         </ol> 
+         <p style="text-align:center; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><img src="https://img-blog.csdn.net/20171026091444473?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZWxlY3RlY2g2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="" width="700"><br> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; text-align:center; word-wrap:break-word!important"> <span style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"><span style="font-size:18px">连续正弦波调制公式推导</span></span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">优点：</span></p> 
+         <ol class="list-paddingleft-2" style="margin:0px; padding:0px 0px 0px 30px; max-width:100%; word-wrap:break-word!important">
+          <li style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">相位偏移（公式5）中的(r2-r0)和(r1-r3)相对于脉冲调试法消除了由于测量器件或者环境光引起的固定偏差。</span></p> </li>
+          <li style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">可以根据接收信号的振幅A和强度偏移B来间接的估算深度测量结果的精确程度（方差）。</span></p> </li>
+          <li style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">不要求光源必须是短时高强度脉冲，可以采用不同类型的光源，运用不同的调制方法</span></p> </li>
+         </ol> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">缺点：</span></p> 
+         <ol class="list-paddingleft-2" style="margin:0px; padding:0px 0px 0px 30px; max-width:100%; word-wrap:break-word!important">
+          <li style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">需要多次采样积分，测量时间较长，限制了相机的帧率</span></p> </li>
+          <li style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">需要多次采样积分，测量运动物体时可能会产生运动模糊。</span></p> </li>
+         </ol> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br> </span></p> 
+         <p style="text-align:center; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"><span style="font-size:32px">总结</span></span></p> 
+         <p style="text-align:center; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"><span style="font-size:32px"><br> </span></span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">目前的消费级TOF深度相机主要有：微软的Kinect 2、 MESA 的 SR4000 、Google Project Tango 中使用的PMD Tech 的TOF深度相机等。这些产品已经在体感识别、手势识别、环境建模等方面取得了较多的应用，最典型的就是微软的Kinect 2。</span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">TOF深度相机对时间测量的精度要求较高，即使采用最高精度的电子元器件，也很难达到毫米级的精度。因此，在近距离测量领域，尤其是1m范围内，TOF深度相机的精度与其他深度相机相比还具有较大的差距，这限制它在近距离高精度领域的应用。</span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px"><br style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important"> </span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="font-size:18px">但是，从前面的原理不难看出，TOF深度相机可以通过调节发射脉冲的频率改变相机测量距离；TOF深度相机与基于特征匹配原理的深度相机不同，其测量精度不会随着测量距离的增大而降低，其测量误差在整个测量范围内基本上是固定的；TOF深度相机抗干扰能力也较强。因此，在测量距离要求比较远的场合（如无人驾驶），TOF深度相机具有非常明显的优势。</span></p> 
+         <p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <br> </p> 
+         <p style="text-align:center; margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; max-width:100%; clear:both; min-height:1em; word-wrap:break-word!important"> <span style="margin:0px; padding:0px; max-width:100%; word-wrap:break-word!important; letter-spacing:0px"><span style="font-size:18px"><img src="https://img-blog.csdn.net/20180201175434083?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvZWxlY3RlY2g2/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt=""><br> </span></span></p> 
+         <span style="font-size:18px"><br> </span> 
+         <p></p> 
+         <p><br> </p> 
+        </div> 
+       </div> 
+      </article>  
+     </div> 
+     <div class="directory-boxshadow-dialog" style="display:none;"> 
+      <div class="directory-boxshadow-dialog-box"> 
+      </div> 
+      <div class="vip-limited-time-offer-box-new" id="vip-limited-time-offer-box-new"> 
+       <img class="limited-img limited-img-new" src="https://csdnimg.cn/release/blogv2/dist/pc/img/vip-limited-close-newWhite.png"> 
+       <div class="vip-limited-time-top">
+         确定要放弃本次机会？ 
+       </div> 
+       <span class="vip-limited-time-text">福利倒计时</span> 
+       <div class="limited-time-box-new"> 
+        <span class="time-hour"></span> 
+        <i>:</i> 
+        <span class="time-minite"></span> 
+        <i>:</i> 
+        <span class="time-second"></span> 
+       </div> 
+       <div class="limited-time-vip-box"> 
+        <p> <img class="coupon-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/vip-limited-close-roup.png"> <span class="def">立减 ¥</span> <span class="active limited-num"></span> </p> 
+        <span class="">普通VIP年卡可用</span> 
+       </div> 
+       <a class="limited-time-btn-new" href="https://mall.csdn.net/vip" data-report-click="{&quot;spm&quot;:&quot;1001.2101.3001.9621&quot;}" data-report-query="spm=1001.2101.3001.9621">立即使用</a> 
+      </div> 
+     </div> 
+     <div class="more-toolbox-new more-toolbar" id="toolBarBox"> 
+      <div class="left-toolbox"> 
+       <div class="toolbox-left"> 
+        <div class="profile-box"> 
+         <a class="profile-href" target="_blank" href="https://blog.csdn.net/electech6"><img class="profile-img" src="https://profile-avatar.csdnimg.cn/6b782e2a843d4d17b97c36ec2f1c2e64_electech6.jpg!1"> <span class="profile-name"> 计算机视觉life </span> </a> 
+        </div> 
+        <div class="profile-attend"> 
+         <a class="tool-attend tool-bt-button tool-bt-attend" href="javascript:;" data-report-view="{&quot;mod&quot;:&quot;1592215036_002&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4232&quot;,&quot;extend1&quot;:&quot;关注&quot;}">关注</a> 
+         <a class="tool-item-follow active-animation" style="display:none;">关注</a> 
+        </div> 
+       </div> 
+       <div class="toolbox-middle"> 
+        <ul class="toolbox-list"> 
+         <li class="tool-item tool-item-size tool-active is-like" id="is-like"> <a class="tool-item-href"> <img style="display:none;" id="is-like-imgactive-animation-like" class="animation-dom active-animation" src="https://csdnimg.cn/release/blogv2/dist/pc/img/tobarThumbUpactive.png" alt=""> <img class="isactive" style="display:none" id="is-like-imgactive" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/like-active.png" alt=""> <img class="isdefault" style="display:block" id="is-like-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/like.png" alt=""> <span id="spanCount" class="count "> 21 </span> </a> 
+          <div class="tool-hover-tip">
+           <span class="text space">点赞</span>
+          </div> </li> 
+         <li class="tool-item tool-item-size tool-active is-unlike" id="is-unlike"> <a class="tool-item-href"> <img class="isactive" style="margin-right:0px;display:none" id="is-unlike-imgactive" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/unlike-active.png" alt=""> <img class="isdefault" style="margin-right:0px;display:block" id="is-unlike-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/unlike.png" alt=""> <span id="unlikeCount" class="count "></span> </a> 
+          <div class="tool-hover-tip">
+           <span class="text space">踩</span>
+          </div> </li> 
+         <li class="tool-item tool-item-size tool-active is-collection "> <a class="tool-item-href" href="javascript:;" data-report-click="{&quot;mod&quot;:&quot;popu_824&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4130&quot;,&quot;ab&quot;:&quot;new&quot;}"> <img style="display:none" id="is-collection-img-collection" class="animation-dom active-animation" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/collect-active.png" alt=""> <img class="isdefault" id="is-collection-img" style="display:block" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/collect.png" alt=""> <img class="isactive" id="is-collection-imgactive" style="display:none" src="https://csdnimg.cn/release/blogv2/dist/pc/img/newCollectActive.png" alt=""> <span class="count get-collection " data-num="175" id="get-collection"> 175 </span> </a> 
+          <div class="tool-hover-tip collect"> 
+           <div class="collect-operate-box"> 
+            <span class="collect-text" id="is-collection"> 收藏 </span> 
+           </div> 
+          </div> 
+          <div class="tool-active-list"> 
+           <div class="text">
+             觉得还不错? 
+            <span class="collect-text" id="tool-active-list-collection"> 一键收藏 </span> 
+            <img id="tool-active-list-close" src="https://csdnimg.cn/release/blogv2/dist/pc/img/collectionCloseWhite.png" alt=""> 
+           </div> 
+          </div> </li> 
+         <li class="tool-item tool-item-size tool-active tool-item-comment"> 
+          <div class="guide-rr-first"> 
+           <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/guideRedReward01.png" alt=""> 
+           <button class="btn-guide-known">知道了</button> 
+          </div> <a class="tool-item-href go-side-comment" data-report-click="{&quot;spm&quot;:&quot;1001.2101.3001.7009&quot;}"> <img class="isdefault" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/comment.png" alt=""> <span class="count"> 15 </span> </a> 
+          <div class="tool-hover-tip">
+           <span class="text space">评论</span>
+          </div> </li> 
+         <li class="tool-item tool-item-size tool-active tool-QRcode" data-type="article" id="tool-share"> <a class="tool-item-href" href="javascript:;" data-report-view="{&quot;spm&quot;:&quot;3001.4129&quot;,&quot;extra&quot;:{&quot;type&quot;:&quot;blogdetail&quot;}}"> <img class="isdefault" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/share.png" alt=""> <span class="count">分享</span> </a> 
+          <div class="QRcode active" id="tool-QRcode"> 
+           <div class="share-bg-box"> 
+            <div class="share-content"> 
+             <a id="copyPosterUrl" data-type="link" class="btn-share">复制链接</a> 
+            </div> 
+            <div class="share-content"> 
+             <a class="btn-share" data-type="qq">分享到 QQ</a> 
+            </div> 
+            <div class="share-content"> 
+             <a class="btn-share" data-type="weibo">分享到新浪微博</a> 
+            </div> 
+            <div class="share-code"> 
+             <div class="share-code-box" id="shareCode"></div> 
+             <div class="share-code-text"> 
+              <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/share/icon-wechat.png" alt="">扫一扫 
+             </div> 
+            </div> 
+           </div> 
+          </div> </li> 
+         <li class="tool-item tool-item-size tool-active is-more" id="is-more"> <a class="tool-item-href"> <img class="isdefault" style="margin-right:0px;display:block" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/more.png" alt=""> <span class="count"></span> </a> 
+          <div class="more-opt-box"> 
+           <div class="mini-box"> 
+            <a class="tool-item-href" id="toolReportBtnHide"> <img class="isdefault" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/report.png" alt=""> <span class="count">举报</span> </a> 
+           </div> 
+           <div class="normal-box"> 
+            <a class="tool-item-href" id="toolReportBtnHideNormal"> <img class="isdefault" src="https://csdnimg.cn/release/blogv2/dist/pc/img/toolbar/report.png" alt=""> <span class="count">举报</span> </a> 
+           </div> 
+          </div> </li> 
+        </ul> 
+       </div> 
+       <div class="toolbox-right"> 
+        <div class="tool-directory"> 
+         <a class="bt-columnlist-show" data-id="7249798" data-free="true" data-description="" data-subscribe="false" data-title="深度相机" data-img="https://i-blog.csdnimg.cn/columns/default/20201014180756926.png?x-oss-process=image/resize,m_fixed,h_224,w_224" data-url="https://blog.csdn.net/electech6/category_7249798.html" data-sum="10" data-people="51" data-price="0" data-hotrank="0" data-status="true" data-oldprice="0" data-join="false" data-studyvip="true" data-studysubscribe="false" data-report-view="{&quot;spm&quot;:&quot;1001.2101.3001.6334&quot;,&quot;extend1&quot;:&quot;专栏目录&quot;}" data-report-click="{&quot;spm&quot;:&quot;1001.2101.3001.6334&quot;,&quot;extend1&quot;:&quot;专栏目录&quot;}">专栏目录</a> 
+        </div> 
+       </div> 
+      </div> 
+     </div>   
+     <a id="commentBox" name="commentBox"></a> 
+     <div id="pcCommentBox" class="comment-box comment-box-new2 login-comment-box-new" style="display:none"> 
+      <div class="has-comment" style="display:block"> 
+       <div class="one-line-box"> 
+        <div class="has-comment-tit go-side-comment"> 
+         <span class="count">15</span>&nbsp;条评论 
+        </div> 
+        <div class="has-comment-con comment-operate-item"></div> 
+        <a class="has-comment-bt-right go-side-comment focus">写评论</a> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="first-recommend-box recommend-box recommend-highlight-default"> 
+      <div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/blackmarlin/article/details/121332286" data-report-view="{&quot;ab&quot;:&quot;new&quot;,&quot;spm&quot;:&quot;1001.2101.3001.6661.1&quot;,&quot;mod&quot;:&quot;popu_871&quot;,&quot;extra&quot;:&quot;{\&quot;highlightScore\&quot;:0.0,\&quot;utm_medium\&quot;:\&quot;distribute.pc_relevant_t0.none-task-blog-2~default~BlogCommendFromBaidu~Rate-1-121332286-blog-78349107.235^v43^pc_blog_bottom_relevance_base9\&quot;,\&quot;dist_request_id\&quot;:\&quot;1742371398954_17404\&quot;}&quot;,&quot;dist_request_id&quot;:&quot;1742371398954_17404&quot;,&quot;ab_strategy&quot;:&quot;vipdefault&quot;,&quot;index&quot;:&quot;1&quot;,&quot;strategy&quot;:&quot;2~default~BlogCommendFromBaidu~Rate&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/blackmarlin/article/details/121332286&quot;}"> 
+       <div class="content-box"> 
+        <div class="content-blog display-flex"> 
+         <div class="title-box"> 
+          <span class="type"> <img src="https://csdnimg.cn/release/blogv2/dist/components/img/blogType.png" alt=""> <span class="tip">博客</span> </span> 
+          <a href="https://blog.csdn.net/blackmarlin/article/details/121332286" class="tit" target="_blank" data-report-click="{&quot;ab&quot;:&quot;new&quot;,&quot;spm&quot;:&quot;1001.2101.3001.6661.1&quot;,&quot;mod&quot;:&quot;popu_871&quot;,&quot;extra&quot;:&quot;{\&quot;highlightScore\&quot;:0.0,\&quot;utm_medium\&quot;:\&quot;distribute.pc_relevant_t0.none-task-blog-2~default~BlogCommendFromBaidu~Rate-1-121332286-blog-78349107.235^v43^pc_blog_bottom_relevance_base9\&quot;,\&quot;dist_request_id\&quot;:\&quot;1742371398954_17404\&quot;}&quot;,&quot;dist_request_id&quot;:&quot;1742371398954_17404&quot;,&quot;ab_strategy&quot;:&quot;vipdefault&quot;,&quot;index&quot;:&quot;1&quot;,&quot;strategy&quot;:&quot;2~default~BlogCommendFromBaidu~Rate&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/blackmarlin/article/details/121332286&quot;}" data-report-query="spm=1001.2101.3001.6661.1&amp;utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-1-121332286-blog-78349107.235%5Ev43%5Epc_blog_bottom_relevance_base9&amp;depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-1-121332286-blog-78349107.235%5Ev43%5Epc_blog_bottom_relevance_base9"> 
+           <div class="left ellipsis-online ellipsis-online-1">
+            <em>深度相机</em>工作
+            <em>原理</em> (AMCW)
+           </div> </a> 
+         </div> 
+         <div class="info-box display-flex"> 
+          <div class="info"> 
+           <a href="https://blog.csdn.net/blackmarlin" target="_blank"><span class="blog-title">格物智慧SkyPhy</span></a> 
+          </div> 
+          <div class="info display-flex"> 
+           <span class="info-block time">11-15</span> 
+           <span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt=""> 7169 </span> 
+          </div> 
+         </div> 
+        </div> 
+        <div class="desc-box"> 
+         <a href="https://blog.csdn.net/blackmarlin/article/details/121332286" target="_blank" data-report-click="{&quot;ab&quot;:&quot;new&quot;,&quot;spm&quot;:&quot;1001.2101.3001.6661.1&quot;,&quot;mod&quot;:&quot;popu_871&quot;,&quot;extra&quot;:&quot;{\&quot;highlightScore\&quot;:0.0,\&quot;utm_medium\&quot;:\&quot;distribute.pc_relevant_t0.none-task-blog-2~default~BlogCommendFromBaidu~Rate-1-121332286-blog-78349107.235^v43^pc_blog_bottom_relevance_base9\&quot;,\&quot;dist_request_id\&quot;:\&quot;1742371398954_17404\&quot;}&quot;,&quot;dist_request_id&quot;:&quot;1742371398954_17404&quot;,&quot;ab_strategy&quot;:&quot;vipdefault&quot;,&quot;index&quot;:&quot;1&quot;,&quot;strategy&quot;:&quot;2~default~BlogCommendFromBaidu~Rate&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/blackmarlin/article/details/121332286&quot;}" data-report-query="spm=1001.2101.3001.6661.1&amp;utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-1-121332286-blog-78349107.235%5Ev43%5Epc_blog_bottom_relevance_base9&amp;depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-1-121332286-blog-78349107.235%5Ev43%5Epc_blog_bottom_relevance_base9"> 
+          <div class="desc ellipsis-online ellipsis-online-1">
+           工作
+           <em>原理</em> 
+           <em>ToF</em>
+           <em>成像</em>，
+           <em>深度相机</em>实现调幅
+           <em>连续</em>
+           <em>波</em> (AMCW) 时差测距 (
+           <em>ToF</em>) 
+           <em>原理</em>。 该相机将近红外 (NIR) 频谱中的
+           <em>调制</em>光投射到场景中。 然后，它会记录光线从相机传播到场景，然后从场景返回到相机所花费的间接
+           <em>时间</em>测量值。 处理这些测量值可以生成深度图。 深度图是图像每个像素的一组 Z 坐标值，以毫米为单位。 连同深度图一起，我们还可以获得所谓的清晰 IR 读数。 清晰 IR 读数中的像素值与从场景返回的光线量成正比。 图像类似于普通的 IR 图像。 下图显示了示例深度图（左）的对应的清晰 IR
+          </div> </a> 
+        </div> 
+       </div> 
+      </div> 
+     </div>  
+     <div class="second-recommend-box recommend-box recommend-highlight-default"> 
+      <div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/electech6/article/details/78526800" data-report-view="{&quot;ab&quot;:&quot;new&quot;,&quot;spm&quot;:&quot;1001.2101.3001.6650.1&quot;,&quot;mod&quot;:&quot;popu_387&quot;,&quot;extra&quot;:&quot;{\&quot;highlightScore\&quot;:0.0,\&quot;utm_medium\&quot;:\&quot;distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-1-78526800-blog-78349107.235^v43^pc_blog_bottom_relevance_base9\&quot;,\&quot;dist_request_id\&quot;:\&quot;1742371398954_17404\&quot;}&quot;,&quot;dist_request_id&quot;:&quot;1742371398954_17404&quot;,&quot;ab_strategy&quot;:&quot;vipdefault&quot;,&quot;index&quot;:&quot;1&quot;,&quot;strategy&quot;:&quot;2~default~BlogCommendFromBaidu~Rate&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/78526800&quot;}"> 
+       <div class="content-box"> 
+        <div class="content-blog display-flex"> 
+         <div class="title-box"> 
+          <span class="type"> <img src="https://csdnimg.cn/release/blogv2/dist/components/img/blogType.png" alt=""> <span class="tip">博客</span> </span> 
+          <a href="https://blog.csdn.net/electech6/article/details/78526800" class="tit" target="_blank" data-report-click="{&quot;ab&quot;:&quot;new&quot;,&quot;spm&quot;:&quot;1001.2101.3001.6650.1&quot;,&quot;mod&quot;:&quot;popu_387&quot;,&quot;extra&quot;:&quot;{\&quot;highlightScore\&quot;:0.0,\&quot;utm_medium\&quot;:\&quot;distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-1-78526800-blog-78349107.235^v43^pc_blog_bottom_relevance_base9\&quot;,\&quot;dist_request_id\&quot;:\&quot;1742371398954_17404\&quot;}&quot;,&quot;dist_request_id&quot;:&quot;1742371398954_17404&quot;,&quot;ab_strategy&quot;:&quot;vipdefault&quot;,&quot;index&quot;:&quot;1&quot;,&quot;strategy&quot;:&quot;2~default~BlogCommendFromBaidu~Rate&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/78526800&quot;}" data-report-query="spm=1001.2101.3001.6650.1&amp;utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-1-78526800-blog-78349107.235%5Ev43%5Epc_blog_bottom_relevance_base9&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-1-78526800-blog-78349107.235%5Ev43%5Epc_blog_bottom_relevance_base9"> 
+           <div class="left ellipsis-online ellipsis-online-1">
+            【
+            <em>深度相机</em>
+            <em>系列</em>三】
+            <em>深度相机</em>
+            <em>原理</em>
+            <em>揭秘</em>--双目立体视觉
+           </div> 
+           <div class="tag">
+            热门推荐
+           </div> </a> 
+         </div> 
+         <div class="info-box display-flex"> 
+          <div class="info"> 
+           <a href="https://blog.csdn.net/electech6" target="_blank"><span class="blog-title">计算机视觉life</span></a> 
+          </div> 
+          <div class="info display-flex"> 
+           <span class="info-block time">11-14</span> 
+           <span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt=""> 3万+ </span> 
+          </div> 
+         </div> 
+        </div> 
+        <div class="desc-box"> 
+         <a href="https://blog.csdn.net/electech6/article/details/78526800" target="_blank" data-report-click="{&quot;ab&quot;:&quot;new&quot;,&quot;spm&quot;:&quot;1001.2101.3001.6650.1&quot;,&quot;mod&quot;:&quot;popu_387&quot;,&quot;extra&quot;:&quot;{\&quot;highlightScore\&quot;:0.0,\&quot;utm_medium\&quot;:\&quot;distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-1-78526800-blog-78349107.235^v43^pc_blog_bottom_relevance_base9\&quot;,\&quot;dist_request_id\&quot;:\&quot;1742371398954_17404\&quot;}&quot;,&quot;dist_request_id&quot;:&quot;1742371398954_17404&quot;,&quot;ab_strategy&quot;:&quot;vipdefault&quot;,&quot;index&quot;:&quot;1&quot;,&quot;strategy&quot;:&quot;2~default~BlogCommendFromBaidu~Rate&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/78526800&quot;}" data-report-query="spm=1001.2101.3001.6650.1&amp;utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-1-78526800-blog-78349107.235%5Ev43%5Epc_blog_bottom_relevance_base9&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-1-78526800-blog-78349107.235%5Ev43%5Epc_blog_bottom_relevance_base9"> 
+          <div class="desc ellipsis-online ellipsis-online-1">
+           本文已经首发在个人微信公共号：计算机视觉life（微信号CV_life），欢迎关注！ 导读 为什么非得用双目相机才能得到深度？ 双目立体视觉
+           <em>深度相机</em>的工作流程 双目立体视觉
+           <em>深度相机</em>详细工作
+           <em>原理</em> &nbsp;&nbsp;&nbsp;&nbsp;理想双目相机
+           <em>成像</em>模型 &nbsp;&nbsp;&nbsp;&nbsp;极线约束 &nbsp;&nbsp;&nbsp;&nbsp;图像矫正技术 &nbsp;&nbsp;&nbsp;&nbsp;基于滑动窗口的图像匹配 &nbsp;&nbsp;&nbsp;&nbsp;基于能量优化的图像匹配 
+          </div> </a> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="recommend-box insert-baidu-box  recommend-highlight-default"> 
+      <div class="recommend-item-box no-index" style="display:none"></div> 
+      <div class="recommend-item-box type_blog clearfix" data-url="https://blog.csdn.net/MyArrow/article/details/101754107" data-report-view="{&quot;ab&quot;:&quot;new&quot;,&quot;spm&quot;:&quot;1001.2101.3001.6650.2&quot;,&quot;mod&quot;:&quot;popu_387&quot;,&quot;extra&quot;:&quot;{\&quot;highlightScore\&quot;:0.0,\&quot;utm_medium\&quot;:\&quot;distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-2-101754107-blog-78349107.235^v43^pc_blog_bottom_relevance_base9\&quot;,\&quot;dist_request_id\&quot;:\&quot;1742371398954_17404\&quot;}&quot;,&quot;dist_request_id&quot;:&quot;1742371398954_17404&quot;,&quot;ab_strategy&quot;:&quot;vipdefault&quot;,&quot;index&quot;:&quot;2&quot;,&quot;strategy&quot;:&quot;2~default~BlogCommendFromBaidu~Rate&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/MyArrow/article/details/101754107&quot;}"> 
+       <div class="content-box"> 
+        <div class="content-blog display-flex"> 
+         <div class="title-box"> 
+          <span class="type"> <img src="https://csdnimg.cn/release/blogv2/dist/components/img/blogType.png" alt=""> <span class="tip">博客</span> </span> 
+          <a href="https://blog.csdn.net/MyArrow/article/details/101754107" class="tit" target="_blank" data-report-click="{&quot;ab&quot;:&quot;new&quot;,&quot;spm&quot;:&quot;1001.2101.3001.6650.2&quot;,&quot;mod&quot;:&quot;popu_387&quot;,&quot;extra&quot;:&quot;{\&quot;highlightScore\&quot;:0.0,\&quot;utm_medium\&quot;:\&quot;distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-2-101754107-blog-78349107.235^v43^pc_blog_bottom_relevance_base9\&quot;,\&quot;dist_request_id\&quot;:\&quot;1742371398954_17404\&quot;}&quot;,&quot;dist_request_id&quot;:&quot;1742371398954_17404&quot;,&quot;ab_strategy&quot;:&quot;vipdefault&quot;,&quot;index&quot;:&quot;2&quot;,&quot;strategy&quot;:&quot;2~default~BlogCommendFromBaidu~Rate&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/MyArrow/article/details/101754107&quot;}" data-report-query="spm=1001.2101.3001.6650.2&amp;utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-2-101754107-blog-78349107.235%5Ev43%5Epc_blog_bottom_relevance_base9&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-2-101754107-blog-78349107.235%5Ev43%5Epc_blog_bottom_relevance_base9"> 
+           <div class="left ellipsis-online ellipsis-online-1">
+            <em>ToF</em>基础知识
+           </div> </a> 
+         </div> 
+         <div class="info-box display-flex"> 
+          <div class="info"> 
+           <a href="https://blog.csdn.net/MyArrow" target="_blank"><span class="blog-title">MyArrow的专栏</span></a> 
+          </div> 
+          <div class="info display-flex"> 
+           <span class="info-block time">09-30</span> 
+           <span class="info-block read"><img class="read-img" src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt=""> 6655 </span> 
+          </div> 
+         </div> 
+        </div> 
+        <div class="desc-box"> 
+         <a href="https://blog.csdn.net/MyArrow/article/details/101754107" target="_blank" data-report-click="{&quot;ab&quot;:&quot;new&quot;,&quot;spm&quot;:&quot;1001.2101.3001.6650.2&quot;,&quot;mod&quot;:&quot;popu_387&quot;,&quot;extra&quot;:&quot;{\&quot;highlightScore\&quot;:0.0,\&quot;utm_medium\&quot;:\&quot;distribute.pc_relevant.none-task-blog-2~default~BlogCommendFromBaidu~Rate-2-101754107-blog-78349107.235^v43^pc_blog_bottom_relevance_base9\&quot;,\&quot;dist_request_id\&quot;:\&quot;1742371398954_17404\&quot;}&quot;,&quot;dist_request_id&quot;:&quot;1742371398954_17404&quot;,&quot;ab_strategy&quot;:&quot;vipdefault&quot;,&quot;index&quot;:&quot;2&quot;,&quot;strategy&quot;:&quot;2~default~BlogCommendFromBaidu~Rate&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/MyArrow/article/details/101754107&quot;}" data-report-query="spm=1001.2101.3001.6650.2&amp;utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-2-101754107-blog-78349107.235%5Ev43%5Epc_blog_bottom_relevance_base9&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-2-101754107-blog-78349107.235%5Ev43%5Epc_blog_bottom_relevance_base9"> 
+          <div class="desc ellipsis-online ellipsis-online-1">
+           1. 
+           <em>ToF</em>相机数学模型 
+           <em>ToF</em>: Time of Flight 
+           <em>ToF</em>鼻祖：PMD 1.1 
+           <em>ToF</em>
+           <em>原理</em> 
+           <em>ToF</em>摄像机光探测器收到的信号有：包括各个方向返回的光信号（光子），由背景光线等一
+           <em>系列</em>信号复合组成的，这些光信号均为正弦
+           <em>调制</em>。由于
+           <em>ToF</em>摄像的
+           <em>调制</em>和解调函数都为正弦函数形式，则
+           <em>ToF</em>摄像机发射出的信号及反射回来的信号均可描述为正弦函数的形式，发出的测量信号为： s(t)=A⋅cos(ωt...
+          </div> </a> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="blog-footer-bottom" style="margin-top:10px;"></div>   
+    </main> 
+    <aside class="blog_container_aside"> 
+     <div id="asideProfile" class="aside-box"> 
+      <div class="profile-intro d-flex"> 
+       <div class="avatar-box d-flex justify-content-center flex-column"> 
+        <a href="https://blog.csdn.net/electech6" target="_blank" data-report-click="{&quot;mod&quot;:&quot;popu_379&quot;,&quot;spm&quot;:&quot;3001.4121&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6&quot;,&quot;ab&quot;:&quot;new&quot;}"> <img src="https://profile-avatar.csdnimg.cn/6b782e2a843d4d17b97c36ec2f1c2e64_electech6.jpg!1" class="avatar_pic"> </a> 
+       </div> 
+       <div class="user-info d-flex flex-column profile-intro-name-box"> 
+        <div class="profile-intro-name-boxTop"> 
+         <a href="https://blog.csdn.net/electech6" target="_blank" class="" id="uid" title="计算机视觉life" data-report-click="{&quot;mod&quot;:&quot;popu_379&quot;,&quot;spm&quot;:&quot;3001.4122&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6&quot;,&quot;ab&quot;:&quot;new&quot;}"> <span class="name " username="electech6">计算机视觉life</span> </a> 
+         <span> </span> 
+         <span class="flag expert-blog"> <span class="bubble">CSDN认证博客专家</span> </span> 
+         <span class="flag company-blog"> <span class="bubble">CSDN认证企业博客</span> </span> 
+        </div> 
+        <div class="profile-intro-name-boxFooter"> 
+         <span class="personal-home-page personal-home-years" title="已加入 CSDN 11年">码龄11年</span> 
+         <span class="personal-home-page"> <a class="personal-home-certification" href="https://i.csdn.net/#/uc/profile?utm_source=14998968" target="_blank" title="暂无认证"> <img src="https://csdnimg.cn/identity/nocErtification.png" alt=""> 暂无认证 </a> </span> 
+        </div> 
+       </div> 
+      </div> 
+      <div class="data-info d-flex item-tiling"> 
+       <dl class="text-center" title="209"> 
+        <a href="https://blog.csdn.net/electech6" data-report-click="{&quot;mod&quot;:&quot;1598321000_001&quot;,&quot;spm&quot;:&quot;3001.4310&quot;}" data-report-query="t=1"> 
+         <dt>
+          <span class="count">209</span>
+         </dt> 
+         <dd class="font">
+          原创
+         </dd> </a> 
+       </dl> 
+       <dl class="text-center" data-report-click="{&quot;mod&quot;:&quot;1598321000_002&quot;,&quot;spm&quot;:&quot;3001.4311&quot;}" title="21129"> 
+        <a href="https://blog.csdn.net/rank/list/weekly" target="_blank"> 
+         <dt>
+          <span class="count">2万+</span>
+         </dt> 
+         <dd class="font">
+          周排名
+         </dd> </a> 
+       </dl> 
+       <dl class="text-center" title="46980"> 
+        <a href="https://blog.csdn.net/rank/list/total" data-report-click="{&quot;mod&quot;:&quot;1598321000_003&quot;,&quot;spm&quot;:&quot;3001.4312&quot;}" target="_blank"> 
+         <dt>
+          <span class="count">4万+</span>
+         </dt> 
+         <dd class="font">
+          总排名
+         </dd> </a> 
+       </dl> 
+       <dl class="text-center" style="min-width:58px" title="1896614"> 
+        <dt>
+         <span class="count">189万+</span>
+        </dt> 
+        <dd>
+         访问
+        </dd> 
+       </dl> 
+       <dl class="text-center" title="7级,点击查看等级说明"> 
+        <dt>
+         <a href="https://blog.csdn.net/blogdevteam/article/details/103478461" target="_blank"> <img class="level" src="https://csdnimg.cn/identity/blog7.png"> </a> 
+        </dt> 
+        <dd>
+         等级
+        </dd> 
+       </dl> 
+      </div> 
+      <div class="item-rank"></div> 
+      <div class="data-info d-flex item-tiling"> 
+       <dl class="text-center" title="12141"> 
+        <dt>
+         <span class="count">1万+</span>
+        </dt> 
+        <dd>
+         积分
+        </dd> 
+       </dl> 
+       <dl class="text-center" id="fanBox" title="4289"> 
+        <dt>
+         <span class="count" id="fan">4289</span>
+        </dt> 
+        <dd>
+         粉丝
+        </dd> 
+       </dl> 
+       <dl class="text-center" title="1894"> 
+        <dt>
+         <span class="count">1894</span>
+        </dt> 
+        <dd>
+         获赞
+        </dd> 
+       </dl> 
+       <dl class="text-center" title="432"> 
+        <dt>
+         <span class="count">432</span>
+        </dt> 
+        <dd>
+         评论
+        </dd> 
+       </dl> 
+       <dl class="text-center" title="10341"> 
+        <dt>
+         <span class="count">1万+</span>
+        </dt> 
+        <dd>
+         收藏
+        </dd> 
+       </dl> 
+      </div> 
+      <div class="aside-box-footer" data-report-view="{&quot;spm&quot;:&quot;3001.4296&quot;}"> 
+       <div class="badge-box d-flex"> 
+        <div class="badge d-flex"> 
+         <div class="icon-badge" title="分享学徒"> 
+          <div class="mouse-box"> 
+           <img class="medal-img" data-report-click="{&quot;spm&quot;:&quot;3001.4296&quot;}" src="https://csdnimg.cn/medal/fenxiangxuetu@240.png" alt="分享学徒"> 
+          </div> 
+         </div> 
+         <div class="icon-badge" title="持续创作"> 
+          <div class="mouse-box"> 
+           <img class="medal-img" data-report-click="{&quot;spm&quot;:&quot;3001.4296&quot;}" src="https://csdnimg.cn/medal/chizhiyiheng@240.png" alt="持续创作"> 
+          </div> 
+         </div> 
+         <div class="icon-badge" title="笔耕不辍"> 
+          <div class="mouse-box"> 
+           <img class="medal-img" data-report-click="{&quot;spm&quot;:&quot;3001.4296&quot;}" src="https://csdnimg.cn/d47ed691c4ed4e23885dc553c0c1ca22.png" alt="笔耕不辍"> 
+          </div> 
+         </div> 
+         <div class="icon-badge" title="创作能手"> 
+          <div class="mouse-box"> 
+           <img class="medal-img" data-report-click="{&quot;spm&quot;:&quot;3001.4296&quot;}" src="https://csdnimg.cn/medal/qixiebiaobing4@240.png" alt="创作能手"> 
+          </div> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+      <div class="profile-intro-name-boxOpration"> 
+       <div class="opt-letter-watch-box"> 
+        <a rel="noopener" class="bt-button personal-letter" href="https://im.csdn.net/chat/electech6" target="_blank">私信</a> 
+       </div> 
+       <div class="opt-letter-watch-box"> 
+        <a class="personal-watch bt-button" id="btnAttent">关注</a> 
+       </div> 
+      </div> 
+     </div> 
+     <div class="swiper-slide-box-remuneration"> 
+      <a data-report-click="{&quot;spm&quot;:&quot;3001.9728&quot;,&quot;extra&quot;:{&quot;index&quot;:&quot;0&quot;}}" data-report-view="{&quot;spm&quot;:&quot;3001.9728&quot;,&quot;extra&quot;:{&quot;index&quot;:&quot;0&quot;}}" href="https://ai.csdn.net/" target="_blank"> <img src="https://i-operation.csdnimg.cn/images/6363a50105a943849c49eb4e3e5a3092.png" alt=""> </a> 
+     </div> 
+     <div id="asideSearchArticle" class="aside-box"> 
+      <div class="aside-content search-comter"> 
+       <div class="aside-search aside-search-blog"> 
+        <input type="text" class="input-serch-blog" name="" autocomplete="off" value="" id="search-blog-words" placeholder="搜博主文章"> 
+        <a class="btn-search-blog" data-report-click="{&quot;spm&quot;:&quot;3001.9182&quot;}"> <img src="https://csdnimg.cn/cdn/content-toolbar/csdn-sou.png?v=1587021042"> </a> 
+       </div> 
+      </div> 
+     </div> 
+     <div id="asideHotArticle" class="aside-box"> 
+      <h3 class="aside-title">热门文章</h3> 
+      <div class="aside-content"> 
+       <ul class="hotArticle-list"> 
+        <li> <a href="https://blog.csdn.net/electech6/article/details/85142769" target="_blank" data-report-click="{&quot;mod&quot;:&quot;popu_541&quot;,&quot;spm&quot;:&quot;3001.4139&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/85142769&quot;,&quot;ab&quot;:&quot;new&quot;}"> 什么是多模态机器学习？ <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt=""> <span class="read">190245</span> </a> </li> 
+        <li> <a href="https://blog.csdn.net/electech6/article/details/95240278" target="_blank" data-report-click="{&quot;mod&quot;:&quot;popu_541&quot;,&quot;spm&quot;:&quot;3001.4139&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/95240278&quot;,&quot;ab&quot;:&quot;new&quot;}"> 目标检测综述 <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt=""> <span class="read">140265</span> </a> </li> 
+        <li> <a href="https://blog.csdn.net/electech6/article/details/45509779" target="_blank" data-report-click="{&quot;mod&quot;:&quot;popu_541&quot;,&quot;spm&quot;:&quot;3001.4139&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/45509779&quot;,&quot;ab&quot;:&quot;new&quot;}"> SLIC超像素分割详解（一）：简介 <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt=""> <span class="read">128014</span> </a> </li> 
+        <li> <a href="https://blog.csdn.net/electech6/article/details/80637405" target="_blank" data-report-click="{&quot;mod&quot;:&quot;popu_541&quot;,&quot;spm&quot;:&quot;3001.4139&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/80637405&quot;,&quot;ab&quot;:&quot;new&quot;}"> AR VR MR 到底有啥区别？ <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt=""> <span class="read">118376</span> </a> </li> 
+        <li> <a href="https://blog.csdn.net/electech6/article/details/82597882" target="_blank" data-report-click="{&quot;mod&quot;:&quot;popu_541&quot;,&quot;spm&quot;:&quot;3001.4139&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/82597882&quot;,&quot;ab&quot;:&quot;new&quot;}"> 从零开始一起学习SLAM | 学习SLAM到底需要学什么？ <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt=""> <span class="read">64929</span> </a> </li> 
+       </ul> 
+      </div> 
+     </div> 
+     <div id="asideCategory" class="aside-box flexible-box"> 
+      <h3 class="aside-title">分类专栏</h3> 
+      <div class="aside-content"> 
+       <ul> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_12134706.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_12134706.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756918.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> 人工智能 </span> </a> <span class="special-column-num">1篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_12134707.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_12134707.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756930.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> 开源 </span> </a> <span class="special-column-num">1篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_12123863.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_12123863.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756927.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> 激光SLAM </span> </a> <span class="special-column-num">1篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_10924869.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_10924869.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756928.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> 三维视觉 </span> </a> <span class="special-column-num">12篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_3174271.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_3174271.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756724.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> 图像分割 </span> </a> <span class="special-column-num">6篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_3199233.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_3199233.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756925.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> OpenCV </span> </a> <span class="special-column-num">9篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_6174572.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_6174572.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756757.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> 数据挖掘 </span> </a> <span class="special-column-num">7篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_6199262.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_6199262.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756738.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> 计算机视觉 </span> </a> <span class="special-column-num">122篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_6200591.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_6200591.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756724.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> 参会总结 </span> </a> <span class="special-column-num">13篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_6642763.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_6642763.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756780.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> 随感随写 </span> </a> <span class="special-column-num">3篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_6671155.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_6671155.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756930.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> 产业理解 </span> </a> <span class="special-column-num">9篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_7249798.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_7249798.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756926.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> 深度相机 </span> </a> <span class="special-column-num">10篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_7327324.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_7327324.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756757.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> 调试经验 </span> </a> <span class="special-column-num">4篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_7436438.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_7436438.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756926.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> 立体全景拼接 </span> </a> <span class="special-column-num">1篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_7725330.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_7725330.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756918.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> AR </span> </a> <span class="special-column-num">1篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_8017328.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_8017328.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> 视觉SLAM </span> </a> <span class="special-column-num">89篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_8453853.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_8453853.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756754.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> 机器学习 </span> </a> <span class="special-column-num">7篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_8497159.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_8497159.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756927.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> 医学图像处理 </span> </a> <span class="special-column-num">1篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_8966516.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_8966516.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756923.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> SLAM </span> </a> <span class="special-column-num">43篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_9086051.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_9086051.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756930.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> SALM </span> </a> <span class="special-column-num">1篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_9106463.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_9106463.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756724.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> 深度学习 </span> </a> <span class="special-column-num">6篇</span> </li> 
+        <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_9106467.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_9106467.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+          <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756930.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class="title oneline"> 医学图像 </span> </a> <span class="special-column-num">1篇</span> </li> 
+       </ul> 
+      </div> 
+      <p class="text-center"> <a class="flexible-btn" data-fbox="aside-archive"><img class="look-more" src="https://csdnimg.cn/release/blogv2/dist/pc/img/arrowDownWhite.png" alt=""></a> </p> 
+     </div> 
+     <div id="asideNewComments" class="aside-box"> 
+      <h3 class="aside-title">最新评论</h3> 
+      <div class="aside-content"> 
+       <ul class="newcomment-list"> 
+        <li> <a class="title text-truncate" target="_blank" href="https://blog.csdn.net/electech6/article/details/141821086#comments_36164464" data-report-click="{&quot;mod&quot;:&quot;popu_542&quot;,&quot;spm&quot;:&quot;3001.4231&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/141821086#comments_36164464&quot;,&quot;ab&quot;:&quot;new&quot;}" data-report-view="{&quot;mod&quot;:&quot;popu_542&quot;,&quot;spm&quot;:&quot;3001.4231&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/141821086#comments_36164464&quot;,&quot;ab&quot;:&quot;new&quot;}">【求助】未经允许我的免费文章变成付费的了！如何一键取消？</a> <p class="comment ellipsis"> <a href="https://blog.csdn.net/scjingying" class="user-name" target="_blank">scjingying: </a> <span class="code-comments">别去投诉了，弃用把，你改过来保不住哪天他们又改成付费了，他们之前累积了很多数据资料，现在想用这些资料变现，分成给你是不存在的，只有大家都弃用了，他们才没有办法，像iteye一样，现在都没有人用了</span> </p> </li> 
+        <li> <a class="title text-truncate" target="_blank" href="https://blog.csdn.net/electech6/article/details/141821086#comments_36037317" data-report-click="{&quot;mod&quot;:&quot;popu_542&quot;,&quot;spm&quot;:&quot;3001.4231&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/141821086#comments_36037317&quot;,&quot;ab&quot;:&quot;new&quot;}" data-report-view="{&quot;mod&quot;:&quot;popu_542&quot;,&quot;spm&quot;:&quot;3001.4231&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/141821086#comments_36037317&quot;,&quot;ab&quot;:&quot;new&quot;}">【求助】未经允许我的免费文章变成付费的了！如何一键取消？</a> <p class="comment ellipsis"> <a href="https://blog.csdn.net/JK_pink" class="user-name" target="_blank">JK_pink: </a> <span class="code-comments">哭了，正好看到佬16年棋盘格检测的文章，然后就看到被锁付费了<img src="https://g.csdnimg.cn/static/face/emoji/054.png" alt="表情包"></span> </p> </li> 
+        <li> <a class="title text-truncate" target="_blank" href="https://blog.csdn.net/electech6/article/details/141821086#comments_35648948" data-report-click="{&quot;mod&quot;:&quot;popu_542&quot;,&quot;spm&quot;:&quot;3001.4231&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/141821086#comments_35648948&quot;,&quot;ab&quot;:&quot;new&quot;}" data-report-view="{&quot;mod&quot;:&quot;popu_542&quot;,&quot;spm&quot;:&quot;3001.4231&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/141821086#comments_35648948&quot;,&quot;ab&quot;:&quot;new&quot;}">【求助】未经允许我的免费文章变成付费的了！如何一键取消？</a> <p class="comment ellipsis"> <a href="https://blog.csdn.net/qq_36524442" class="user-name" target="_blank">鱼塘里的派大星: </a> <span class="code-comments">已经弃用</span> </p> </li> 
+        <li> <a class="title text-truncate" target="_blank" href="https://blog.csdn.net/electech6/article/details/141821086#comments_34370511" data-report-click="{&quot;mod&quot;:&quot;popu_542&quot;,&quot;spm&quot;:&quot;3001.4231&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/141821086#comments_34370511&quot;,&quot;ab&quot;:&quot;new&quot;}" data-report-view="{&quot;mod&quot;:&quot;popu_542&quot;,&quot;spm&quot;:&quot;3001.4231&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/141821086#comments_34370511&quot;,&quot;ab&quot;:&quot;new&quot;}">【求助】未经允许我的免费文章变成付费的了！如何一键取消？</a> <p class="comment ellipsis"> <a href="https://blog.csdn.net/you_lan_hai" class="user-name" target="_blank">游蓝海: </a> <span class="code-comments">投诉他们。我已经投诉了，多一个人投诉，多一份力量。投诉的人多了，就会引起重视。 https://hlwtsxt.miit.gov.cn/#/complaint/default</span> </p> </li> 
+        <li> <a class="title text-truncate" target="_blank" href="https://blog.csdn.net/electech6/article/details/86585234#comments_33634315" data-report-click="{&quot;mod&quot;:&quot;popu_542&quot;,&quot;spm&quot;:&quot;3001.4231&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/86585234#comments_33634315&quot;,&quot;ab&quot;:&quot;new&quot;}" data-report-view="{&quot;mod&quot;:&quot;popu_542&quot;,&quot;spm&quot;:&quot;3001.4231&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/86585234#comments_33634315&quot;,&quot;ab&quot;:&quot;new&quot;}">可视化理解四元数，愿你不再掉头发</a> <p class="comment ellipsis"> <a href="https://blog.csdn.net/weixin_44415965" class="user-name" target="_blank">枝江谱信楠: </a> <span class="code-comments">甚至付费</span> </p> </li> 
+       </ul> 
+      </div> 
+     </div> 
+     <div id="asideHotArticle" class="aside-box"> 
+      <h3 class="aside-title">大家在看</h3> 
+      <div class="aside-content"> 
+       <ul class="hotArticle-list"> 
+        <li> <a href="https://blog.csdn.net/weixin_37800531/article/details/146290635" target="_blank" data-report-click="{&quot;spm&quot;:&quot;3001.10093&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/weixin_37800531/article/details/146290635&quot;,&quot;strategy&quot;:&quot;202_1052723-2567282_RCMD&quot;,&quot;ab&quot;:&quot;new&quot;}" data-report-view="{&quot;spm&quot;:&quot;3001.10093&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/weixin_37800531/article/details/146290635&quot;,&quot;strategy&quot;:&quot;202_1052723-2567282_RCMD&quot;,&quot;ab&quot;:&quot;new&quot;}"> 【C++进阶】指针：从基础到实践 <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/readCountWhite.png" alt=""> <span class="read">445</span> </a> </li> 
+        <li> <a href="https://blog.csdn.net/2401_85773741/article/details/146372140" target="_blank" data-report-click="{&quot;spm&quot;:&quot;3001.10093&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/2401_85773741/article/details/146372140&quot;,&quot;strategy&quot;:&quot;202_1052723-2567179_RCMD&quot;,&quot;ab&quot;:&quot;new&quot;}" data-report-view="{&quot;spm&quot;:&quot;3001.10093&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/2401_85773741/article/details/146372140&quot;,&quot;strategy&quot;:&quot;202_1052723-2567179_RCMD&quot;,&quot;ab&quot;:&quot;new&quot;}"> 大模型系列之LLaMA Factory微调学习 </a> </li> 
+        <li> <a href="https://blog.csdn.net/yuanlaile/article/details/146370928" target="_blank" data-report-click="{&quot;spm&quot;:&quot;3001.10093&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/yuanlaile/article/details/146370928&quot;,&quot;strategy&quot;:&quot;202_1052723-2567049_RCMD&quot;,&quot;ab&quot;:&quot;new&quot;}" data-report-view="{&quot;spm&quot;:&quot;3001.10093&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/yuanlaile/article/details/146370928&quot;,&quot;strategy&quot;:&quot;202_1052723-2567049_RCMD&quot;,&quot;ab&quot;:&quot;new&quot;}"> Flutter小白零基础入门到高级项目实战全集 </a> </li> 
+        <li> <a href="https://blog.csdn.net/xueyinan/article/details/146371991" target="_blank" data-report-click="{&quot;spm&quot;:&quot;3001.10093&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/xueyinan/article/details/146371991&quot;,&quot;strategy&quot;:&quot;202_1052723-2567290_RCMD&quot;,&quot;ab&quot;:&quot;new&quot;}" data-report-view="{&quot;spm&quot;:&quot;3001.10093&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/xueyinan/article/details/146371991&quot;,&quot;strategy&quot;:&quot;202_1052723-2567290_RCMD&quot;,&quot;ab&quot;:&quot;new&quot;}"> 小刚说C语言刷题——第1讲 C语言之输出语句printf </a> </li> 
+        <li> <a href="https://blog.csdn.net/2403_88255726/article/details/146312518" target="_blank" data-report-click="{&quot;spm&quot;:&quot;3001.10093&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/2403_88255726/article/details/146312518&quot;,&quot;strategy&quot;:&quot;202_1052723-2567140_RCMD&quot;,&quot;ab&quot;:&quot;new&quot;}" data-report-view="{&quot;spm&quot;:&quot;3001.10093&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/2403_88255726/article/details/146312518&quot;,&quot;strategy&quot;:&quot;202_1052723-2567140_RCMD&quot;,&quot;ab&quot;:&quot;new&quot;}"> 【大唐杯最新考点】------6G技术前沿发展现状（学习笔记分享） </a> </li> 
+       </ul> 
+      </div> 
+     </div> 
+     <div id="asideArchive" class="aside-box" style="display:block!important; width:300px;"> 
+      <h3 class="aside-title">最新文章</h3> 
+      <div class="aside-content"> 
+       <ul class="inf_list clearfix"> 
+        <li class="clearfix"> <a href="https://blog.csdn.net/electech6/article/details/141821086" target="_blank" data-report-click="{&quot;mod&quot;:&quot;popu_382&quot;,&quot;spm&quot;:&quot;3001.4136&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/141821086&quot;,&quot;ab&quot;:&quot;new&quot;}" data-report-view="{&quot;mod&quot;:&quot;popu_382&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/141821086&quot;,&quot;ab&quot;:&quot;new&quot;}">【求助】未经允许我的免费文章变成付费的了！如何一键取消？</a> </li> 
+        <li class="clearfix"> <a href="https://blog.csdn.net/electech6/article/details/128829156" target="_blank" data-report-click="{&quot;mod&quot;:&quot;popu_382&quot;,&quot;spm&quot;:&quot;3001.4136&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/128829156&quot;,&quot;ab&quot;:&quot;new&quot;}" data-report-view="{&quot;mod&quot;:&quot;popu_382&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/128829156&quot;,&quot;ab&quot;:&quot;new&quot;}">中科院自动化所提出新型多摄像头激光雷达校准方法，不需要标定板，完全自动化！</a> </li> 
+        <li class="clearfix"> <a href="https://blog.csdn.net/electech6/article/details/128815834" target="_blank" data-report-click="{&quot;mod&quot;:&quot;popu_382&quot;,&quot;spm&quot;:&quot;3001.4136&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/128815834&quot;,&quot;ab&quot;:&quot;new&quot;}" data-report-view="{&quot;mod&quot;:&quot;popu_382&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/article/details/128815834&quot;,&quot;ab&quot;:&quot;new&quot;}">清华大学用FPGA优化VIO算法，和ARM上准确率相当，前端速度快3倍！</a> </li> 
+       </ul> 
+       <div class="archive-bar"></div> 
+       <div class="archive-box"> 
+        <div class="archive-list-item">
+         <a href="https://blog.csdn.net/electech6?type=blog&amp;year=2024&amp;month=09" target="_blank" data-report-click="{&quot;mod&quot;:&quot;popu_538&quot;,&quot;spm&quot;:&quot;3001.4138&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6?type=blog&amp;year=2024&amp;month=09&quot;}"><span class="year">2024年</span><span class="num">1篇</span></a>
+        </div> 
+        <div class="archive-list-item">
+         <a href="https://blog.csdn.net/electech6?type=blog&amp;year=2023&amp;month=02" target="_blank" data-report-click="{&quot;mod&quot;:&quot;popu_538&quot;,&quot;spm&quot;:&quot;3001.4138&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6?type=blog&amp;year=2023&amp;month=02&quot;}"><span class="year">2023年</span><span class="num">12篇</span></a>
+        </div> 
+        <div class="archive-list-item">
+         <a href="https://blog.csdn.net/electech6?type=blog&amp;year=2022&amp;month=12" target="_blank" data-report-click="{&quot;mod&quot;:&quot;popu_538&quot;,&quot;spm&quot;:&quot;3001.4138&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6?type=blog&amp;year=2022&amp;month=12&quot;}"><span class="year">2022年</span><span class="num">40篇</span></a>
+        </div> 
+        <div class="archive-list-item">
+         <a href="https://blog.csdn.net/electech6?type=blog&amp;year=2021&amp;month=12" target="_blank" data-report-click="{&quot;mod&quot;:&quot;popu_538&quot;,&quot;spm&quot;:&quot;3001.4138&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6?type=blog&amp;year=2021&amp;month=12&quot;}"><span class="year">2021年</span><span class="num">21篇</span></a>
+        </div> 
+        <div class="archive-list-item">
+         <a href="https://blog.csdn.net/electech6?type=blog&amp;year=2020&amp;month=12" target="_blank" data-report-click="{&quot;mod&quot;:&quot;popu_538&quot;,&quot;spm&quot;:&quot;3001.4138&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6?type=blog&amp;year=2020&amp;month=12&quot;}"><span class="year">2020年</span><span class="num">20篇</span></a>
+        </div> 
+        <div class="archive-list-item">
+         <a href="https://blog.csdn.net/electech6?type=blog&amp;year=2019&amp;month=11" target="_blank" data-report-click="{&quot;mod&quot;:&quot;popu_538&quot;,&quot;spm&quot;:&quot;3001.4138&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6?type=blog&amp;year=2019&amp;month=11&quot;}"><span class="year">2019年</span><span class="num">40篇</span></a>
+        </div> 
+        <div class="archive-list-item">
+         <a href="https://blog.csdn.net/electech6?type=blog&amp;year=2018&amp;month=12" target="_blank" data-report-click="{&quot;mod&quot;:&quot;popu_538&quot;,&quot;spm&quot;:&quot;3001.4138&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6?type=blog&amp;year=2018&amp;month=12&quot;}"><span class="year">2018年</span><span class="num">32篇</span></a>
+        </div> 
+        <div class="archive-list-item">
+         <a href="https://blog.csdn.net/electech6?type=blog&amp;year=2017&amp;month=12" target="_blank" data-report-click="{&quot;mod&quot;:&quot;popu_538&quot;,&quot;spm&quot;:&quot;3001.4138&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6?type=blog&amp;year=2017&amp;month=12&quot;}"><span class="year">2017年</span><span class="num">22篇</span></a>
+        </div> 
+        <div class="archive-list-item">
+         <a href="https://blog.csdn.net/electech6?type=blog&amp;year=2016&amp;month=12" target="_blank" data-report-click="{&quot;mod&quot;:&quot;popu_538&quot;,&quot;spm&quot;:&quot;3001.4138&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6?type=blog&amp;year=2016&amp;month=12&quot;}"><span class="year">2016年</span><span class="num">31篇</span></a>
+        </div> 
+        <div class="archive-list-item">
+         <a href="https://blog.csdn.net/electech6?type=blog&amp;year=2015&amp;month=09" target="_blank" data-report-click="{&quot;mod&quot;:&quot;popu_538&quot;,&quot;spm&quot;:&quot;3001.4138&quot;,&quot;ab&quot;:&quot;new&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6?type=blog&amp;year=2015&amp;month=09&quot;}"><span class="year">2015年</span><span class="num">8篇</span></a>
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <!-- 详情页显示目录 --> 
+     <!--文章目录--> 
+     <div id="asidedirectory" class="aside-box"> 
+      <div class="groupfile" id="directory"> 
+       <h3 class="aside-title">目录</h3> 
+       <div class="align-items-stretch group_item"> 
+        <div class="pos-box"> 
+         <div class="scroll-box"> 
+          <div class="toc-box"></div> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </aside>    
+   </div> 
+   <div class="recommend-right align-items-stretch clearfix" id="rightAside" data-type="recommend"> 
+    <aside class="recommend-right_aside"> 
+     <div class="rightside-fixed-hide"> 
+      <div class="recommend-column-box aside-box"> 
+       <h3 class="aside-title">相关专栏 </h3> 
+       <div class="aside-content"> 
+        <div class="recommend-column-itembox exp1"> 
+         <a href="https://blog.csdn.net/lg1259156776/category_3099105.html" title="计算机视觉" target="_blank" data-report-view="{&quot;spm&quot;:&quot;3001.10573&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/lg1259156776/category_3099105.html&quot;,&quot;ab&quot;:&quot;exp1&quot;,&quot;extra&quot;:&quot;{\&quot;id\&quot;:\&quot;78349107\&quot;,\&quot;recommendCount\&quot;:\&quot;12\&quot;,\&quot;index\&quot;:\&quot;0\&quot;,\&quot;type\&quot;:\&quot;column\&quot;}&quot;}" data-report-click="{&quot;spm&quot;:&quot;3001.10573&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/lg1259156776/category_3099105.html&quot;,&quot;ab&quot;:&quot;exp1&quot;,&quot;extra&quot;:&quot;{\&quot;id\&quot;:\&quot;78349107\&quot;,\&quot;recommendCount\&quot;:\&quot;12\&quot;,\&quot;index\&quot;:\&quot;0\&quot;,\&quot;type\&quot;:\&quot;column\&quot;}&quot;}"> 
+          <div class="info-box"> 
+           <div class="img-box"> 
+            <div class="column-img" style="background-image: url(https://i-blog.csdnimg.cn/blog_column_migrate/ec69b984d7fc136bf92c89fae12d3eb6.jpeg?x-oss-process=image/resize,m_fixed,h_224,w_224)" alt="计算机视觉" srcset=""></div> 
+           </div> 
+           <div class="info"> 
+            <div class="title-box"> 
+             <p class="title">计算机视觉</p> 
+             <p class="tag">专栏</p> 
+            </div> 
+            <p class="learn">41 人学习</p> 
+           </div> 
+          </div> <p class="desc" title="主流计算机视觉相关技术，包括图像识别，目标检测，目标跟踪，目标定位，图像分割，实例分割等内容">主流计算机视觉相关技术，包括图像识别，目标检测，目标跟踪，目标定位，图像分割，实例分割等内容</p> </a> 
+        </div> 
+        <div class="recommend-column-itembox exp1"> 
+         <a href="https://blog.csdn.net/weixin_42990464/category_12388048.html" title="导航定位" target="_blank" data-report-view="{&quot;spm&quot;:&quot;3001.10573&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/weixin_42990464/category_12388048.html&quot;,&quot;ab&quot;:&quot;exp1&quot;,&quot;extra&quot;:&quot;{\&quot;id\&quot;:\&quot;78349107\&quot;,\&quot;recommendCount\&quot;:\&quot;12\&quot;,\&quot;index\&quot;:\&quot;1\&quot;,\&quot;type\&quot;:\&quot;column\&quot;}&quot;}" data-report-click="{&quot;spm&quot;:&quot;3001.10573&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/weixin_42990464/category_12388048.html&quot;,&quot;ab&quot;:&quot;exp1&quot;,&quot;extra&quot;:&quot;{\&quot;id\&quot;:\&quot;78349107\&quot;,\&quot;recommendCount\&quot;:\&quot;12\&quot;,\&quot;index\&quot;:\&quot;1\&quot;,\&quot;type\&quot;:\&quot;column\&quot;}&quot;}"> 
+          <div class="info-box"> 
+           <div class="img-box"> 
+            <div class="column-img" style="background-image: url(https://i-blog.csdnimg.cn/direct/5870e04204df4ef5bf345cca1b36bab5.png?x-oss-process=image/resize,m_fixed,h_224,w_224)" alt="导航定位" srcset=""></div> 
+           </div> 
+           <div class="info"> 
+            <div class="title-box"> 
+             <p class="title">导航定位</p> 
+             <p class="tag">专栏</p> 
+            </div> 
+            <p class="learn">143 人学习</p> 
+           </div> 
+          </div> <p class="desc" title="机器人导航定位工作笔记，订了不退。">机器人导航定位工作笔记，订了不退。</p> </a> 
+        </div> 
+        <div class="recommend-column-itembox exp1"> 
+         <a href="https://blog.csdn.net/linjingtu/category_10278707.html" title="兔云程序" target="_blank" data-report-view="{&quot;spm&quot;:&quot;3001.10573&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/linjingtu/category_10278707.html&quot;,&quot;ab&quot;:&quot;exp1&quot;,&quot;extra&quot;:&quot;{\&quot;id\&quot;:\&quot;78349107\&quot;,\&quot;recommendCount\&quot;:\&quot;12\&quot;,\&quot;index\&quot;:\&quot;2\&quot;,\&quot;type\&quot;:\&quot;column\&quot;}&quot;}" data-report-click="{&quot;spm&quot;:&quot;3001.10573&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/linjingtu/category_10278707.html&quot;,&quot;ab&quot;:&quot;exp1&quot;,&quot;extra&quot;:&quot;{\&quot;id\&quot;:\&quot;78349107\&quot;,\&quot;recommendCount\&quot;:\&quot;12\&quot;,\&quot;index\&quot;:\&quot;2\&quot;,\&quot;type\&quot;:\&quot;column\&quot;}&quot;}"> 
+          <div class="info-box"> 
+           <div class="img-box"> 
+            <div class="column-img" style="background-image: url(https://i-blog.csdnimg.cn/blog_column_migrate/9817f0fd0419a3f615eda142e05b5a64.png?x-oss-process=image/resize,m_fixed,h_224,w_224)" alt="兔云程序" srcset=""></div> 
+           </div> 
+           <div class="info"> 
+            <div class="title-box"> 
+             <p class="title">兔云程序</p> 
+             <p class="tag">专栏</p> 
+            </div> 
+            <p class="learn">15 人学习</p> 
+           </div> 
+          </div> <p class="desc" title="以互联网各大IT公司面试题目为主题，以各大IT技术为切合点，以解决各种IT问题为奇点，致力于构建程序员生态圈">以互联网各大IT公司面试题目为主题，以各大IT技术为切合点，以解决各种IT问题为奇点，致力于构建程序员生态圈</p> </a> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+     <div id="recommend-right"> 
+      <div class="flex-column aside-box groupfile" id="groupfile"> 
+       <div class="groupfile-div"> 
+        <h3 class="aside-title">目录</h3> 
+        <div class="align-items-stretch group_item"> 
+         <div class="pos-box"> 
+          <div class="scroll-box"> 
+           <div class="toc-box"></div> 
+          </div> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+      <div class="aside-box kind_person d-flex flex-column"> 
+       <h3 class="aside-title">分类专栏</h3> 
+       <div class="align-items-stretch kindof_item" id="kind_person_column"> 
+        <div class="aside-content"> 
+         <ul> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_12134706.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_12134706.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756918.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> 人工智能 </span> </a> <span class="special-column-num">1篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_12134707.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_12134707.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756930.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> 开源 </span> </a> <span class="special-column-num">1篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_12123863.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_12123863.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756927.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> 激光SLAM </span> </a> <span class="special-column-num">1篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_10924869.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_10924869.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756928.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> 三维视觉 </span> </a> <span class="special-column-num">12篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_3174271.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_3174271.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756724.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> 图像分割 </span> </a> <span class="special-column-num">6篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_3199233.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_3199233.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756925.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> OpenCV </span> </a> <span class="special-column-num">9篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_6174572.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_6174572.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756757.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> 数据挖掘 </span> </a> <span class="special-column-num">7篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_6199262.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_6199262.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756738.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> 计算机视觉 </span> </a> <span class="special-column-num">122篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_6200591.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_6200591.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756724.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> 参会总结 </span> </a> <span class="special-column-num">13篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_6642763.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_6642763.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756780.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> 随感随写 </span> </a> <span class="special-column-num">3篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_6671155.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_6671155.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756930.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> 产业理解 </span> </a> <span class="special-column-num">9篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_7249798.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_7249798.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756926.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> 深度相机 </span> </a> <span class="special-column-num">10篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_7327324.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_7327324.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756757.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> 调试经验 </span> </a> <span class="special-column-num">4篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_7436438.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_7436438.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756926.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> 立体全景拼接 </span> </a> <span class="special-column-num">1篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_7725330.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_7725330.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756918.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> AR </span> </a> <span class="special-column-num">1篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_8017328.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_8017328.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> 视觉SLAM </span> </a> <span class="special-column-num">89篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_8453853.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_8453853.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756754.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> 机器学习 </span> </a> <span class="special-column-num">7篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_8497159.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_8497159.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756927.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> 医学图像处理 </span> </a> <span class="special-column-num">1篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_8966516.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_8966516.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756923.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> SLAM </span> </a> <span class="special-column-num">43篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_9086051.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_9086051.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756930.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> SALM </span> </a> <span class="special-column-num">1篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_9106463.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_9106463.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756724.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> 深度学习 </span> </a> <span class="special-column-num">6篇</span> </li> 
+          <li> <a class="clearfix special-column-name" href="https://blog.csdn.net/electech6/category_9106467.html" data-report-click="{&quot;mod&quot;:&quot;popu_537&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4137&quot;,&quot;strategy&quot;:&quot;pc付费专栏左侧入口&quot;,&quot;dest&quot;:&quot;https://blog.csdn.net/electech6/category_9106467.html&quot;,&quot;ab&quot;:&quot;new&quot;}"> 
+            <div class="special-column-bar "></div> <img src="https://i-blog.csdnimg.cn/columns/default/20201014180756930.png?x-oss-process=image/resize,m_fixed,h_64,w_64" alt="" onerror="this.src='https://i-blog.csdnimg.cn/columns/default/20201014180756922.png?x-oss-process=image/resize,m_fixed,h_64,w_64'"> <span class=""> 医学图像 </span> </a> <span class="special-column-num">1篇</span> </li> 
+         </ul> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </aside> 
+   </div> 
+   <div class="recommend-right1  align-items-stretch clearfix" id="rightAsideConcision" data-type="recommend"> 
+    <aside class="recommend-right_aside"> 
+     <div id="recommend-right-concision"> 
+      <div class="flex-column aside-box groupfile" id="groupfileConcision"> 
+       <div class="groupfile-div1"> 
+        <h3 class="aside-title">目录</h3> 
+        <div class="align-items-stretch group_item"> 
+         <div class="pos-box"> 
+          <div class="scroll-box"> 
+           <div class="toc-box"></div> 
+          </div> 
+         </div> 
+        </div> 
+       </div> 
+      </div> 
+     </div> 
+    </aside> 
+   </div> 
+  </div> 
+  <div class="mask-dark"></div> 
+  <div class="skin-boxshadow"></div> 
+  <div class="directory-boxshadow"></div> 
+  <div class="comment-side-box-shadow comment-side-tit-close" id="commentSideBoxshadow"> 
+   <div class="comment-side-content"> 
+    <div class="comment-side-tit"> 
+     <div class="comment-side-tit-count">
+      评论&nbsp;
+      <span class="count">15</span>
+     </div> 
+     <img class="comment-side-tit-close" src="https://csdnimg.cn/release/blogv2/dist/pc/img/closeBt.png">
+    </div> 
+    <div id="pcCommentSideBox" class="comment-box comment-box-new2 " style="display:block"> 
+     <div class="comment-edit-box d-flex"> 
+      <div class="user-img"> 
+       <a href="https://blog.csdn.net/2401_84444578" target="_blank"> <img src="https://profile-avatar.csdnimg.cn/default.jpg!1"> </a> 
+      </div> 
+      <form id="commentform"> 
+       <textarea class="comment-content" name="comment_content" id="comment_content" placeholder="欢迎高质量的评论，低质的评论会被折叠" maxlength="1000"></textarea> 
+       <div class="comment-reward-box" style="background-image: url('https://img-home.csdnimg.cn/images/20230131025301.png');"> 
+        <a class="btn-remove-reward"></a> 
+        <div class="form-reward-box"> 
+         <div class="info">
+           成就一亿技术人! 
+         </div> 
+         <div class="price-info">
+           拼手气红包
+          <span class="price">6.0元</span> 
+         </div> 
+        </div> 
+       </div> 
+       <div class="comment-operate-box"> 
+        <div class="comment-operate-l"> 
+         <span id="tip_comment" class="tip">还能输入<em>1000</em>个字符</span> 
+        </div> 
+        <div class="comment-operate-c">
+          &nbsp; 
+        </div> 
+        <div class="comment-operate-r"> 
+         <div class="comment-operate-item comment-reward"> 
+          <img class="comment-operate-img" data-url="https://csdnimg.cn/release/blogv2/dist/pc/img/" src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentReward.png" alt="红包"> 
+          <span class="comment-operate-tip">添加红包</span> 
+         </div> 
+         <div class="comment-operate-item comment-emoticon"> 
+          <img class="comment-operate-img" data-url="https://csdnimg.cn/release/blogv2/dist/pc/img/" src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentEmotionIcon.png" alt="表情包"> 
+          <span class="comment-operate-tip">插入表情</span> 
+          <div class="comment-emoticon-box comment-operate-isshow"> 
+           <div class="comment-emoticon-img-box"></div> 
+          </div> 
+         </div> 
+         <div class="comment-operate-item comment-code"> 
+          <img class="comment-operate-img" data-url="https://csdnimg.cn/release/blogv2/dist/pc/img/" src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentCodeIcon.png" alt="表情包"> 
+          <span class="comment-operate-tip">代码片</span> 
+          <div class="comment-code-box comment-operate-isshow"> 
+           <ul id="commentCode"> 
+            <li><a data-code="html">HTML/XML</a></li> 
+            <li><a data-code="objc">objective-c</a></li> 
+            <li><a data-code="ruby">Ruby</a></li> 
+            <li><a data-code="php">PHP</a></li> 
+            <li><a data-code="csharp">C</a></li> 
+            <li><a data-code="cpp">C++</a></li> 
+            <li><a data-code="javascript">JavaScript</a></li> 
+            <li><a data-code="python">Python</a></li> 
+            <li><a data-code="java">Java</a></li> 
+            <li><a data-code="css">CSS</a></li> 
+            <li><a data-code="sql">SQL</a></li> 
+            <li><a data-code="plain">其它</a></li> 
+           </ul> 
+          </div> 
+         </div> 
+         <div class="comment-operate-item"> 
+          <input type="hidden" id="comment_replyId" name="comment_replyId"> 
+          <input type="hidden" id="article_id" name="article_id" value="78349107"> 
+          <input type="hidden" id="comment_userId" name="comment_userId" value=""> 
+          <input type="hidden" id="commentId" name="commentId" value=""> 
+          <a data-report-click="{&quot;mod&quot;:&quot;1582594662_003&quot;,&quot;spm&quot;:&quot;1001.2101.3001.4227&quot;,&quot;ab&quot;:&quot;new&quot;}"> <input type="submit" class="btn-comment btn-comment-input" value="评论"> </a> 
+         </div> 
+        </div> 
+       </div> 
+      </form> 
+     </div> 
+     <div class="comment-list-container"> 
+      <div class="comment-list-box comment-operate-item"> 
+      </div> 
+      <div id="lookGoodComment" class="look-good-comment side-look-comment"> 
+       <a class="look-more-comment">查看更多评论<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentArrowDownWhite.png" alt=""></a> 
+      </div> 
+      <div id="lookFlodComment" class="look-flod-comment"> 
+       <span class="count"></span>&nbsp;条评论被折叠&nbsp;
+       <a class="look-more-flodcomment">查看</a> 
+      </div> 
+      <div class="opt-box text-center"> 
+       <div class="btn btn-sm btn-link-blue" id="btnMoreComment"></div> 
+      </div> 
+     </div> 
+    </div> 
+    <div id="pcFlodCommentSideBox" class="pc-flodcomment-sidebox"> 
+     <div class="comment-fold-tit">
+      <span id="lookUnFlodComment" class="back"><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentArrowLeftWhite.png" alt=""></span>被折叠的&nbsp;
+      <span class="count"></span>&nbsp;条评论 
+      <a href="https://blogdev.blog.csdn.net/article/details/122245662" class="tip" target="_blank">为什么被折叠?</a> 
+      <a href="https://bbs.csdn.net/forums/FreeZone" class="park" target="_blank"> <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/iconPark.png">到【灌水乐园】发言</a> 
+     </div> 
+     <div class="comment-fold-content"></div> 
+     <div id="lookBadComment" class="look-bad-comment side-look-comment"> 
+      <a class="look-more-comment">查看更多评论<img src="https://csdnimg.cn/release/blogv2/dist/pc/img/commentArrowDownWhite.png" alt=""></a> 
+     </div> 
+    </div> 
+   </div> 
+   <div class="comment-rewarddialog-box"> 
+    <div class="form-box"> 
+     <div class="title-box">
+       添加红包 
+      <a class="btn-form-close"></a> 
+     </div> 
+     <form id="commentRewardForm"> 
+      <div class="ipt-box"> 
+       <label for="txtName">祝福语</label> 
+       <div class="ipt-btn-box"> 
+        <input type="text" name="name" id="txtName" autocomplete="off" maxlength="50"> 
+        <a class="btn-ipt btn-random"></a> 
+       </div> 
+       <p class="notice">请填写红包祝福语或标题</p> 
+      </div> 
+      <div class="ipt-box"> 
+       <label for="txtSendAmount">红包数量</label> 
+       <div class="ipt-txt-box"> 
+        <input type="text" name="sendAmount" maxlength="4" id="txtSendAmount" placeholder="请填写红包数量(最小10个)" autocomplete="off"> 
+        <span class="after-txt">个</span> 
+       </div> 
+       <p class="notice">红包个数最小为10个</p> 
+      </div> 
+      <div class="ipt-box"> 
+       <label for="txtMoney">红包总金额</label> 
+       <div class="ipt-txt-box error"> 
+        <input type="text" name="money" maxlength="5" id="txtMoney" placeholder="请填写总金额(最低5元)" autocomplete="off"> 
+        <span class="after-txt">元</span> 
+       </div> 
+       <p class="notice">红包金额最低5元</p> 
+      </div> 
+      <div class="balance-info-box"> 
+       <label>余额支付</label> 
+       <div class="balance-info">
+         当前余额
+        <span class="balance">3.43</span>元 
+        <a href="https://i.csdn.net/#/wallet/balance/recharge" class="link-charge" target="_blank">前往充值 &gt;</a> 
+       </div> 
+      </div> 
+      <div class="opt-box"> 
+       <div class="pay-info">
+         需支付：
+        <span class="price">10.00</span>元 
+       </div> 
+       <button type="button" class="ml-auto btn-cancel">取消</button> 
+       <button type="button" class="ml8 btn-submit" disabled="true">确定</button> 
+      </div> 
+     </form> 
+    </div> 
+   </div> 
+   <div class="rr-guide-box"> 
+    <div class="rr-first-box"> 
+     <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/guideRedReward02.png" alt=""> 
+     <button class="btn-guide-known next">下一步</button> 
+    </div> 
+    <div class="rr-second-box"> 
+     <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/guideRedReward03.png" alt=""> 
+     <button class="btn-guide-known known">知道了</button> 
+    </div> 
+   </div> 
+  </div> 
+  <div class="redEnvolope" id="redEnvolope"> 
+   <div class="env-box"> 
+    <div class="env-container"> 
+     <div class="pre-open" id="preOpen"> 
+      <div class="top"> 
+       <header> 
+        <img class="clearTpaErr" :src="redpacketAuthor.avatar" alt=""> 
+        <div class="author">
+         成就一亿技术人!
+        </div> 
+       </header> 
+       <div class="bot-icon"></div> 
+      </div> 
+      <footer> 
+       <div class="red-openbtn open-start"></div> 
+       <div class="tip">
+         领取后你会自动成为博主和红包主的粉丝 
+        <a class="rule" target="_blank">规则</a> 
+       </div> 
+      </footer> 
+     </div> 
+     <div class="opened" id="opened"> 
+      <div class="bot-icon"> 
+       <header> 
+        <a class="creatorUrl" href="" target="_blank"> <img class="clearTpaErr" src="https://profile-avatar.csdnimg.cn/default.jpg!2" alt=""> </a> 
+        <div class="author"> 
+         <div class="tt">
+          hope_wisdom
+         </div> 发出的红包 
+        </div> 
+       </header> 
+      </div> 
+      <div class="receive-box"> 
+       <header></header> 
+       <div class="receive-list"> 
+       </div> 
+      </div> 
+     </div> 
+    </div> 
+    <div class="close-btn"></div> 
+   </div> 
+  </div> 
+  <div class="pay-code"> 
+   <div class="pay-money">
+    实付
+    <span class="pay-money-span" data-nowprice="" data-oldprice="">元</span>
+   </div> 
+   <div class="content-blance">
+    <a class="blance-bt" href="javascript:;">使用余额支付</a>
+   </div> 
+   <div class="content-code"> 
+    <div id="payCode" data-id=""> 
+     <div class="renovate"> 
+      <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/pay-time-out.png"> 
+      <span>点击重新获取</span> 
+     </div> 
+    </div> 
+    <div class="pay-style">
+     <span><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/weixin.png"></span>
+     <span><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/zhifubao.png"></span>
+     <span><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/jingdong.png"></span>
+     <span class="text">扫码支付</span>
+    </div> 
+   </div> 
+   <div class="bt-close"> 
+    <svg t="1567152543821" class="icon" viewbox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="10924" xmlns:xlink="http://www.w3.org/1999/xlink" width="12" height="12"> 
+     <defs> 
+      <style type="text/css"></style> 
+     </defs> 
+     <path d="M512 438.378667L806.506667 143.893333a52.032 52.032 0 1 1 73.6 73.621334L585.621333 512l294.485334 294.485333a52.074667 52.074667 0 0 1-73.6 73.642667L512 585.621333 217.514667 880.128a52.053333 52.053333 0 1 1-73.621334-73.642667L438.378667 512 143.893333 217.514667a52.053333 52.053333 0 1 1 73.621334-73.621334L512 438.378667z" fill="" p-id="10925"></path> 
+    </svg> 
+   </div> 
+   <div class="pay-balance"> 
+    <input type="radio" class="pay-code-radio" data-type="details"> 
+    <span class="span">钱包余额</span> 
+    <span class="balance" style="color:#FC5531;font-size:14px;">0</span> 
+    <div class="pay-code-tile"> 
+     <img src="https://csdnimg.cn/release/blogv2/dist/pc/img/pay-help.png" alt=""> 
+     <div class="pay-code-content"> 
+      <div class="span"> 
+       <p class="title">抵扣说明：</p> 
+       <p> 1.余额是钱包充值的虚拟货币，按照1:1的比例进行支付金额的抵扣。<br> 2.余额无法直接购买下载，可以购买VIP、付费专栏及课程。</p> 
+      </div> 
+     </div> 
+    </div> 
+   </div> 
+   <a class="pay-balance-con" href="https://i.csdn.net/#/wallet/balance/recharge" target="_blank"><img src="https://csdnimg.cn/release/blogv2/dist/pc/img/recharge.png" alt=""><span>余额充值</span></a> 
+  </div> 
+  <div style="display:none;"> 
+   <img src="" onerror="setTimeout(function(){if(!/(csdn.net|iteye.com|baiducontent.com|googleusercontent.com|360webcache.com|sogoucdn.com|bingj.com|baidu.com)$/.test(window.location.hostname)){var test=&quot;\x68\x74\x74\x70\x73\x3a\x2f\x2f\x77\x77\x77\x2e\x63\x73\x64\x6e\x2e\x6e\x65\x74&quot;}},3000);"> 
+  </div> 
+  <div class="keyword-dec-box" id="keywordDecBox"></div>  
+  <!-- 富文本柱状图  --> 
+  <link rel="stylesheet" href="https://csdnimg.cn/release/blog_editor_html/release1.6.12/ckeditor/plugins/chart/chart.css">        
+  <link rel="stylesheet" href="https://g.csdnimg.cn/lib/cboxEditor/1.1.6/embed-editor.min.css"> 
+  <link rel="stylesheet" href="https://csdnimg.cn/release/blog_editor_html/release1.6.12/ckeditor/plugins/codesnippet/lib/highlight/styles/atom-one-light.css">                  
+ </body>
+</html>
