@@ -1,0 +1,51 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue June 01 19:03:44 2023
+
+For concatenating modified QD & MNIST dataset into the mixed dataset for training and testing spectra-adapted sensor
+
+@author: Wang Jialiang
+"""
+
+import os
+import sys
+import time
+from tqdm import tqdm
+import numpy as np
+import pandas as pd
+from imageio import v2 as iio
+from matplotlib import pyplot as plt
+import PIL
+from PIL import Image as P_img
+import tensorflow as tf
+from __Mod_route__ import get_root
+
+rr=get_root()
+Task_name='\\20230927'
+
+Dataset_test=[]
+Dataset_train=[]
+
+for i in range(4):
+    Test_iter_sce_1 = np.load(rr+'\\Mixed_dataset'+Task_name+'\\Test\\Test_IR_jammed_B'+str(i+2)+'.npy')
+    Test_iter_sce_2 = np.load(rr+'\\Mixed_dataset'+Task_name+'\\Test\\Test_vis_jammed_B'+str(i+2)+'.npy')
+    Test_iter = np.concatenate((Test_iter_sce_1, Test_iter_sce_2),axis=0)
+    
+    Train_iter_sce_1 = np.load(rr+'\\Mixed_dataset'+Task_name+'\\Train\\Train_IR_jammed_B'+str(i+2)+'.npy')
+    Train_iter_sce_2 = np.load(rr+'\\Mixed_dataset'+Task_name+'\\Train\\Train_vis_jammed_B'+str(i+2)+'.npy')
+    Train_iter = np.concatenate((Train_iter_sce_1, Train_iter_sce_2),axis=0)
+    
+    Dataset_test.append(Test_iter)
+    Dataset_train.append(Train_iter)
+    
+
+# save trimed dataset to local directory 
+print('\n Saving trimed images into datasheet')
+outdir_trim=rr+'\Mixed_dataset'+Task_name+'\\Test'
+if not os.path.exists(outdir_trim):
+    os.mkdir(outdir_trim)
+
+for i in range(4):
+    np.save(rr+'\\Mixed_dataset'+Task_name+'\\Test_B'+str(i+2)+'.npy',Dataset_test[i])
+    np.save(rr+'\\Mixed_dataset'+Task_name+'\\Train_B'+str(i+2)+'.npy',Dataset_train[i])
+    

@@ -1,0 +1,276 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue May 30 19:03:44 2023
+
+@author: Wang Jialiang
+
+This dataset is adapted from The QuickDraw! dataset (https://github.com/googlecreativelab/quickdraw-dataset/) with the Creative Commons Attribution-Share Alike 4.0 license (https://creativecommons.org/licenses/by/4.0/). 
+This dataset is licensed under Creative Commons Attribution-Share Alike 4.0 license (https://creativecommons.org/licenses/by/4.0/). 
+
+"""
+
+import os
+import sys
+import time
+from tqdm import tqdm
+import numpy as np
+import pandas as pd
+from imageio import v2 as iio
+from matplotlib import pyplot as plt
+import PIL
+from PIL import Image as P_image
+import tensorflow as tf
+from __Mod_route__ import get_root
+
+
+rr=get_root()
+QD_Lib_route='E:\Code\__Public_QD_Lib__' # QuickDraw! dataset at local
+Task_name='\\20230927_mix'
+
+
+"""
+Load and label QD dataset
+"""
+#%%
+# load 8 classes of QD images into individual numpy arraies
+QD_names_lib=['bicycle', 'car', 'monalisa', 'tent', 'traffic_light']
+QD_dataset_train = np.empty((0,785))
+QD_dataset_test = np.empty((0,785))
+
+for i in tqdm(range(len(QD_names_lib))):
+    QD_images_temp = np.load(QD_Lib_route+'\\full_numpy_bitmap_'+QD_names_lib[i]+'.npy')
+    QD_labels_temp = np.zeros((QD_images_temp.shape[0],1),dtype=int)
+    QD_labels_temp.fill(int(i+10))
+    QD_dataset_temp = np.concatenate((QD_labels_temp,QD_images_temp),axis=1)
+    # splite training set and testing set
+    QD_dataset_train_temp = QD_dataset_temp[0:12000,]
+    QD_dataset_test_temp = QD_dataset_temp[12000:13000,]
+    # update dataset
+    QD_dataset_train = np.concatenate((QD_dataset_train,QD_dataset_train_temp),axis=0)
+    QD_dataset_test = np.concatenate((QD_dataset_test,QD_dataset_test_temp),axis=0)
+
+outdir_dataset=rr+'\QD_selected'+Task_name
+if not os.path.exists(outdir_dataset):
+    os.mkdir(outdir_dataset)
+
+np.save(outdir_dataset+'\\QD_selected_train.npy', QD_dataset_train)
+np.save(outdir_dataset+'\\QD_selected_test.npy', QD_dataset_test)
+    #%%
+    
+
+"""
+Trim training set images
+"""
+#%%
+QD_dataset_train = np.load(rr+'\\QD_selected'+Task_name+'\\QD_selected_train.npy')
+# shuffle samples (10 times)
+print('\n Loading dataset')
+for i in range(10):
+    perm_iter = np.random.permutation(QD_dataset_train.shape[0])
+    QD_dataset_train = QD_dataset_train[perm_iter]
+    
+# generate daylight illumination 
+print('\n Generating training set (daylight)')
+QD_dataset_train_day=QD_dataset_train.copy()[0:30000,:]
+QD_dataset_train_day_B2=QD_dataset_train_day/2.55*0.2                            # mapping image to illumination in the range of 0~20 mW/cm^-2
+QD_dataset_train_day_B2=QD_dataset_train_day_B2.clip(2,100)                      # add a minimum background of 5 mW cm^-2 to IR band irradiation 
+
+QD_dataset_train_day_B3=QD_dataset_train_day/2.55*0.4                            # mapping image to illumination in the range of 0~100 mW/cm^-2
+QD_dataset_train_day_B3=QD_dataset_train_day_B3.clip(4,100)                      # add a minimum background of 10 mW cm^-2 to visible band irradiation
+
+# QD_dataset_train_day_B4=QD_dataset_train_day/2.55*0.4                            # mapping image to illumination in the range of 0~100 mW/cm^-2
+# QD_dataset_train_day_B4=QD_dataset_train_day_B4.clip(4,100)                      # add a minimum background of 10 mW cm^-2 to visible band irradiation 
+
+# QD_dataset_train_day_B5=QD_dataset_train_day/2.55*0.4                            # mapping image to illumination in the range of 0~100 mW/cm^-2
+# QD_dataset_train_day_B5=QD_dataset_train_day_B5.clip(4,100)                      # add a minimum background of 10 mW cm^-2 to visible band irradiation 
+
+# regenerate labels
+QD_dataset_train_day_B2[:,0]=QD_dataset_train_day[:,0]
+QD_dataset_train_day_B3[:,0]=QD_dataset_train_day[:,0]
+# QD_dataset_train_day_B4[:,0]=QD_dataset_train_day[:,0]
+# QD_dataset_train_day_B5[:,0]=QD_dataset_train_day[:,0]
+print('\n Training set (daylight) generated')
+
+# generate nighttime illumination 
+print('\n Generating training set (nighttime)')
+QD_dataset_train_night=QD_dataset_train.copy()[30000:600000,:]
+
+QD_dataset_train_night_B2=QD_dataset_train_night/2.55*0.2
+QD_dataset_train_night_B2=QD_dataset_train_night_B2.clip(2,100)
+
+QD_dataset_train_night_B3=QD_dataset_train_night/2.55*0.2                        # set nighttime vis band illumination to 1 10th that of daylight
+QD_dataset_train_night_B3=QD_dataset_train_night_B3.clip(2,100)                  # nighttime background is also set 1 10th of that of daylight 
+
+# QD_dataset_train_night_B4=QD_dataset_train_night/2.55*0.2                        # set nighttime vis band illumination to 1 10th that of daylight
+# QD_dataset_train_night_B4=QD_dataset_train_night_B4.clip(2,100)                  # nighttime background is also set 1 10th of that of daylight 
+
+# QD_dataset_train_night_B5=QD_dataset_train_night/2.55*0.2                        # set nighttime vis band illumination to 1 10th that of daylight
+# QD_dataset_train_night_B5=QD_dataset_train_night_B5.clip(2,100)                  # nighttime background is also set 1 10th of that of daylight 
+
+# regenerate labels
+QD_dataset_train_night_B2[:,0]=QD_dataset_train_night[:,0]
+QD_dataset_train_night_B3[:,0]=QD_dataset_train_night[:,0]
+# QD_dataset_train_night_B4[:,0]=QD_dataset_train_night[:,0]
+# QD_dataset_train_night_B5[:,0]=QD_dataset_train_night[:,0]
+print('\n Training set (nighttime) generated')
+
+# adding interference
+print('\n Adding interference to nighttime illumination')
+QD_dataset_train_interference=QD_dataset_train_night_B3[15000:30000,1:].reshape((-1,28,28))
+
+for i in tqdm(range(QD_dataset_train_interference.shape[0])):
+    seed_size_x=np.random.randint(12,18)
+    seed_size_y=np.random.randint(12,18)
+    seed_x=np.random.randint(0,28-seed_size_x)
+    seed_y=np.random.randint(0,28-seed_size_y)
+    QD_dataset_train_interference[i,seed_x:seed_x+seed_size_x,seed_y:seed_y+seed_size_y]+=200
+    
+QD_dataset_train_interference=QD_dataset_train_interference.clip(0,255)
+QD_dataset_train_night_B3[15000:30000,1:]=QD_dataset_train_interference.reshape((-1,784))
+# QD_dataset_train_night_B4[25000:50000,1:]=QD_dataset_train_interference.reshape((-1,784))
+# QD_dataset_train_night_B5[25000:50000,1:]=QD_dataset_train_interference.reshape((-1,784))
+
+print('\n finihsed')
+
+# concatenate visions
+QD_dataset_train_B2=np.concatenate((QD_dataset_train_day_B2,QD_dataset_train_night_B2),axis=0)
+QD_dataset_train_B3=np.concatenate((QD_dataset_train_day_B3,QD_dataset_train_night_B3),axis=0)
+# QD_dataset_train_B4=np.concatenate((QD_dataset_train_day_B4,QD_dataset_train_night_B4),axis=0)
+# QD_dataset_train_B5=np.concatenate((QD_dataset_train_day_B5,QD_dataset_train_night_B5),axis=0)
+
+QD_dataset_train_B2_img=QD_dataset_train_B2[:,1:].reshape((-1,28,28))
+QD_dataset_train_B3_img=QD_dataset_train_B3[:,1:].reshape((-1,28,28))
+# QD_dataset_train_B4_img=QD_dataset_train_B4[:,1:].reshape((-1,28,28))
+# QD_dataset_train_B5_img=QD_dataset_train_B5[:,1:].reshape((-1,28,28))
+
+# save trimed dataset to local directory 
+print('\n Saving trimed images into datasheet')
+outdir_trim=rr+'\QD_selected'+Task_name+'\\Train'
+if not os.path.exists(outdir_trim):
+    os.mkdir(outdir_trim)
+    
+np.save(outdir_trim+'\\Train_vis_jammed_B2.npy',QD_dataset_train_B2)
+np.save(outdir_trim+'\\Train_vis_jammed_B3.npy',QD_dataset_train_B3)
+np.save(outdir_trim+'\\Train_vis_jammed_B4.npy',QD_dataset_train_B3)
+np.save(outdir_trim+'\\Train_vis_jammed_B5.npy',QD_dataset_train_B3)
+
+np.save(outdir_trim+'\\Train_vis_jammed_B2_img.npy',QD_dataset_train_B2_img)
+np.save(outdir_trim+'\\Train_vis_jammed_B3_img.npy',QD_dataset_train_B3_img)
+np.save(outdir_trim+'\\Train_vis_jammed_B4_img.npy',QD_dataset_train_B3_img)
+np.save(outdir_trim+'\\Train_vis_jammed_B5_img.npy',QD_dataset_train_B3_img)
+    #%%
+
+
+"""
+Trim test set images
+"""
+#%%
+QD_dataset_test = np.load(rr+'\\QD_selected'+Task_name+'\\QD_selected_test.npy')
+# shuffle samples (10 times)
+for i in range(10):
+    perm_iter = np.random.permutation(QD_dataset_test.shape[0])
+    QD_dataset_test = QD_dataset_test[perm_iter]
+# generate daylight illumination 
+print('\n Generating testing set (daylight)')
+QD_dataset_test_day=QD_dataset_test.copy()                                      # Duplicating test set into 3 scenarioes to avoid the influence of sample-to-sample variation on classification results
+QD_dataset_test_day_B2=QD_dataset_test_day/2.55*0.2                             # mapping image to illumination in the range of 0~20 mW/cm^-2
+QD_dataset_test_day_B2=QD_dataset_test_day_B2.clip(2,100)                       # add a minimum background of 5 mW cm^-2 to IR band irradiation 
+
+QD_dataset_test_day_B3=QD_dataset_test_day/2.55*0.4                             # mapping image to illumination in the range of 0~100 mW/cm^-2
+QD_dataset_test_day_B3=QD_dataset_test_day_B3.clip(4,100)                       # add a minimum background of 10 mW cm^-2 to visible band irradiation 
+
+# QD_dataset_test_day_B4=QD_dataset_test_day/2.55*0.4                             # mapping image to illumination in the range of 0~100 mW/cm^-2
+# QD_dataset_test_day_B4=QD_dataset_test_day_B4.clip(4,100)                       # add a minimum background of 10 mW cm^-2 to visible band irradiation 
+
+# QD_dataset_test_day_B5=QD_dataset_test_day/2.55*0.4                             # mapping image to illumination in the range of 0~100 mW/cm^-2
+# QD_dataset_test_day_B5=QD_dataset_test_day_B5.clip(4,100)                       # add a minimum background of 10 mW cm^-2 to visible band irradiation 
+
+# regenerate labels
+QD_dataset_test_day_B2[:,0]=QD_dataset_test_day[:,0]
+QD_dataset_test_day_B3[:,0]=QD_dataset_test_day[:,0]
+# QD_dataset_test_day_B4[:,0]=QD_dataset_test_day[:,0]
+# QD_dataset_test_day_B5[:,0]=QD_dataset_test_day[:,0]
+
+print('\n Testing set (daylight) generated')
+
+# generate nighttime illumination 
+print('\n Generating testing set (nighttime)')
+QD_dataset_test_night=QD_dataset_test.copy()
+QD_dataset_test_night_B2=QD_dataset_test_night/2.55*0.2
+QD_dataset_test_night_B2=QD_dataset_test_night_B2.clip(2,100)
+
+QD_dataset_test_night_B3=QD_dataset_test_night/2.55*0.2                         # set nighttime vis band illumination to 1 10th that of daylight
+QD_dataset_test_night_B3=QD_dataset_test_night_B3.clip(2,100)                   # nighttime background is also set 1 10th of that of daylight 
+
+# QD_dataset_test_night_B4=QD_dataset_test_night/2.55*0.2                         # set nighttime vis band illumination to 1 10th that of daylight
+# QD_dataset_test_night_B4=QD_dataset_test_night_B4.clip(2,100)                   # nighttime background is also set 1 10th of that of daylight 
+
+# QD_dataset_test_night_B5=QD_dataset_test_night/2.55*0.2                         # set nighttime vis band illumination to 1 10th that of daylight
+# QD_dataset_test_night_B5=QD_dataset_test_night_B5.clip(2,100)                   # nighttime background is also set 1 10th of that of daylight 
+
+# regenerate labels
+QD_dataset_test_night_B2[:,0]=QD_dataset_test_night[:,0]
+QD_dataset_test_night_B3[:,0]=QD_dataset_test_night[:,0]
+# QD_dataset_test_night_B4[:,0]=QD_dataset_test_night[:,0]
+# QD_dataset_test_night_B5[:,0]=QD_dataset_test_night[:,0]
+
+print('\n Testing set (nighttime) generated')
+
+# generate interference illumination
+print('\n Adding interference to nighttime illumination')
+
+QD_dataset_test_interference_B2=QD_dataset_test_night_B2.copy()
+QD_dataset_test_interference_B3=QD_dataset_test_night_B3.copy()
+# QD_dataset_test_interference_B4=QD_dataset_test_night_B4.copy()
+# QD_dataset_test_interference_B5=QD_dataset_test_night_B5.copy()
+
+QD_interference=QD_dataset_test_interference_B3[:,1:].reshape((-1,28,28))
+
+for i in tqdm(range(QD_interference.shape[0])):
+    seed_size_x=np.random.randint(12,18)
+    seed_size_y=np.random.randint(12,18)
+    seed_x=np.random.randint(0,28-seed_size_x)
+    seed_y=np.random.randint(0,28-seed_size_y)
+    QD_interference[i,seed_x:seed_x+seed_size_x,seed_y:seed_y+seed_size_y]+=200
+    
+QD_interference=QD_interference.clip(2,255)  
+QD_dataset_test_interference_B3[:,1:]=QD_interference.reshape((-1,784))
+# QD_dataset_test_interference_B4[:,1:]=QD_interference.reshape((-1,784))
+# QD_dataset_test_interference_B5[:,1:]=QD_interference.reshape((-1,784))
+
+print('\n finihsed')
+
+# concatenate visions
+QD_dataset_test_B2=np.concatenate((QD_dataset_test_day_B2,QD_dataset_test_night_B2,
+                                   QD_dataset_test_interference_B2),axis=0)
+QD_dataset_test_B3=np.concatenate((QD_dataset_test_day_B3,QD_dataset_test_night_B3,
+                                    QD_dataset_test_interference_B3),axis=0)
+# QD_dataset_test_B4=np.concatenate((QD_dataset_test_day_B4,QD_dataset_test_night_B4,
+#                                    QD_dataset_test_interference_B4),axis=0)
+# QD_dataset_test_B5=np.concatenate((QD_dataset_test_day_B5,QD_dataset_test_night_B5,
+#                                     QD_dataset_test_interference_B5),axis=0)
+
+QD_dataset_test_seed_img=QD_dataset_test[:,1:].reshape((-1,28,28))
+QD_dataset_test_B2_img=QD_dataset_test_B2[:,1:].reshape((-1,28,28))
+QD_dataset_test_B3_img=QD_dataset_test_B3[:,1:].reshape((-1,28,28))
+# QD_dataset_test_B4_img=QD_dataset_test_B4[:,1:].reshape((-1,28,28))
+# QD_dataset_test_B5_img=QD_dataset_test_B5[:,1:].reshape((-1,28,28))
+
+# save trimed dataset to local directory 
+print('\n Saving trimed images into datasheet')
+outdir_trim=rr+'\QD_selected'+Task_name+'\\Test'
+if not os.path.exists(outdir_trim):
+    os.mkdir(outdir_trim)
+
+
+np.save(outdir_trim+'\\Test_vis_jammed_B2.npy',QD_dataset_test_B2)
+np.save(outdir_trim+'\\Test_vis_jammed_B3.npy',QD_dataset_test_B3)
+np.save(outdir_trim+'\\Test_vis_jammed_B4.npy',QD_dataset_test_B3)
+np.save(outdir_trim+'\\Test_vis_jammed_B5.npy',QD_dataset_test_B3)
+
+np.save(outdir_trim+'\\Test_vis_jammed_seed_img.npy',QD_dataset_test_seed_img)
+np.save(outdir_trim+'\\Test_vis_jammed_B2_img.npy',QD_dataset_test_B2_img)
+np.save(outdir_trim+'\\Test_vis_jammed_B3_img.npy',QD_dataset_test_B3_img)
+np.save(outdir_trim+'\\Test_vis_jammed_B4_img.npy',QD_dataset_test_B3_img)
+np.save(outdir_trim+'\\Test_vis_jammed_B5_img.npy',QD_dataset_test_B3_img)
+    #%%

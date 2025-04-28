@@ -1,0 +1,124 @@
+### 编程题一
+
+```java
+需求:
+	身高是具有遗传性的，子女的身高和父母的身高有一定的关系。假定，父母和子女的身高遗传关系如下：
+	儿子身高（厘米）＝(父亲身高＋母亲身高) ×1.08÷2
+	女儿身高（厘米）＝(父亲身高×0.923＋母亲身高) ÷2
+现有父亲身高177CM,母亲身高165CM。求子女身高分别预计为多少？
+```
+
+
+
+##### 您的代码:
+
+```java
+public class Test01{
+  public static void main(String[] args){
+    int h1 = 177, h2 = 165;
+    int a = (h1+h2)*1.08/2;
+    int b = (h1*0.923+h2)/2;
+    System.out.println("son:"+a+'CM');
+    System.out.println("daughter:"+b+'CM');
+  }
+}
+```
+
+
+
+### 编程题二
+
+```java
+需求:
+	定义一个int类型的变量,初始化值为1234,求这个数的个位,十位,百位,千位分别是多少?
+        
+运行效果:
+	1234的个位是4,十位是3,百位是2,千位是1
+```
+
+
+
+##### 您的代码:
+
+```java
+
+```
+
+**以下图形中给出了解题思路**
+
+![1596528591750](img/1596528591750.png)
+
+### 题目三:
+
+```
+某外卖商家的菜品单价如下:
+    1.鱼香肉丝每份24元,油炸花生米每份8元,米饭每份3元。
+    2.优惠方式:
+        总金额大于100元,总金额打9折,其它无折扣        
+    3.需求:
+        小明购买了3分鱼香肉丝,3份花生米,5份米饭,最终需要付多少钱?
+```
+
+
+
+##### 你的代码:
+
+```java
+
+```
+
+
+
+### 题目四:
+
+```
+需求:
+	动物园里有两只老虎，已知两只老虎的体重分别为180kg、200kg，
+	请用程序实现判断两只老虎的体重是否相同。
+```
+
+
+
+##### 你的代码:
+
+```java
+
+```
+
+
+
+### 题目五:
+
+```java
+需求:
+	一座寺庙里住着三个和尚，已知他们的身高分别为150cm、210cm、165cm，
+    请开发程序，可以通过键盘输入这三个和尚的身高，并计算出出这三个和尚的最高身高。
+```
+
+
+
+##### 你的代码:
+
+```java
+import java.util.Scanner;
+
+public class Main{
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter the first:");
+        int h1 = sc.nextInt();
+        System.out.println("Enter the second:");
+        int h2 = sc.nextInt();
+        System.out.println("Enter the third:");
+        int h3 = sc.nextInt();
+
+        int temp = (h1 < h2) ? h1 : h2;
+        int min = (temp < h3) ? temp : h3;
+
+        System.out.println("MIN: " + min);
+    }
+}
+```
+
+
+

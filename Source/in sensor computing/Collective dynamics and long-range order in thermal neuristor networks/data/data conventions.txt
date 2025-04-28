@@ -1,0 +1,16 @@
+1. Title meaning "Ben012_2_320k_2c4_22k_7V+2c3_30k_5v_10_000_ALL”
+   Ben012_2 or Ben_012_1:sample name
+   320k: base temperature
+   2C4_22k_7V: Device 2C4, 7V input voltage, 22kohms load resistor.
+   2c3_30k_5v: Device 2C3, 5V input voltage, 30kohms load resistor.
+   10：the 10th time repetitive measurement
+   000_ALL: default setting name from the oscilloscope.
+   Spike:(Sometimes I forgot to label this csv data file with spike)
+
+2. Colunm A is time trace    Unit: s
+   Colunm B (CH1), Column C (CH2) are the voltage trace and the current trace of oscillator A
+   Colunm D (CH3), Column E (CH4) are the current trace and the voltage trace of oscillator B
+   Unit: V
+
+3. The current traces (CH2 and CH3) are measured via the voltage drop across a 50 ohm resistor. 
+   To obtain the current, divide these columns by 50. 
