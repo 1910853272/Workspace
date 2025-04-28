@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8" ?>
 <!-- 注释：以上抬头声明必须放在第一行，必须有 -->
 <!--  根标签只能有一个 -->
@@ -28,3 +29,35 @@
         </data1>
     </user>
 </users>
+=======
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- 注释：以上抬头声明必须放在第一行，必须有 -->
+<!--  根标签只能有一个 -->
+<users>
+    <user id="1" desc="第一个用户">
+        <name>张无忌</name>
+        <sex>男</sex>
+        <地址>光明顶</地址>
+        <password>minmin</password>
+        <data> 3 &lt; 2 &amp;&amp; 5 > 4 </data>
+        <data1>
+            <![CDATA[
+                3 < 2 && 5 > 4
+            ]]>
+        </data1>
+    </user>
+    <people>很多人</people>
+    <user id="2">
+        <name>敏敏</name>
+        <sex>女</sex>
+        <地址>光明顶</地址>
+        <password>wuji</password>
+        <data> 3 &lt; 2 &amp;&amp; 5 > 4 </data>
+        <data1>
+            <![CDATA[
+                3 < 2 && 5 > 4
+            ]]>
+        </data1>
+    </user>
+</users>
+>>>>>>> d418ed5a0517a1c34a75d286fd5c685a031f6eb6

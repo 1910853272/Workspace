@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.itheima.d12_extends_override;
 
 public class Student extends Object{
@@ -36,3 +37,43 @@ public class Student extends Object{
                 '}';
     }
 }
+=======
+package com.itheima.d12_extends_override;
+
+public class Student extends Object{
+    private String name;
+    private int age;
+
+    public Student() {
+    }
+
+    public Student(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                '}';
+    }
+}
+>>>>>>> d418ed5a0517a1c34a75d286fd5c685a031f6eb6
