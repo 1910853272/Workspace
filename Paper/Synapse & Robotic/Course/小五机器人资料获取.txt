@@ -1,0 +1,26 @@
+=========================================================
+资料：
+=========================================================
+深蓝学院ros-moveit课程：
+链接：https://pan.baidu.com/s/1qp7oNel7_c1fjRTXPPQU0Q
+提取码：8888
+链接：https://pan.baidu.com/s/1XFUt0A80jLEEJEXFuyuRCQ
+提取码：8888
+
+视觉抓取：
+jacquard数据集：https://pan.baidu.com/s/1524HrVAoHNlc6-9lcZaGew
+本项目代码：https://pan.baidu.com/s/13Y8_XJuT1PVb702Pl3tp8A
+提取码均为：8888
+
+ros机械臂入门教程代码 version3.0链接：
+链接：https://pan.baidu.com/s/1KFLQXVWShG5KfroCd6eM0A 
+提取码：8888
+
+ROS2机械臂控制程序——键盘控制机械臂和夹爪、moveit程序集成
+链接：https://pan.baidu.com/s/1NDiYqdeZx6rzsgY4B1xBkQ 
+提取码：8888
+
+=========================================================
+进微信群方式：添加微信：littlefive_robot，进群费用10r，加好友时请做好备注。
+QQ交流群，免费进群：571287568/955869726，进群请做好备注：学校/公司＋研究方向。
+=========================================================
