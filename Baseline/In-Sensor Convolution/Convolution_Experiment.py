@@ -11,9 +11,9 @@ def ScaleAbs(img, alpha, beta):
 def laplace(img):
     r, c = img.shape
     new_image = np.zeros((r, c), dtype=np.float32)
-    L_kernel = np.array([[0, -1.1, 0],
-                         [-1.2, 4.2, -1],
-                         [0, -0.9, 0]], dtype=np.float32)
+    L_kernel = np.array([[0, -1.01, 0],
+                         [-1.01, 4.01, -1.01],
+                         [0, -1.01, 0]], dtype=np.float32)
 
     # 卷积（注意边界到 r-2, c-2）
     for i in range(r - 2):
@@ -36,6 +36,8 @@ if __name__ == '__main__':
     # 3. ScaleAbs 增强对比度
     # alpha >1 会放大细节（高对比度），beta 可用于整体亮度偏移
     alpha = 1.5
-    beta  = 0
+    beta  = 0.5
     Lap_enhanced = ScaleAbs(Lap, alpha, beta)
+
+    # 保存处理后的图像
     cv2.imwrite('Convolution_Experiment.jpg', Lap_enhanced)
