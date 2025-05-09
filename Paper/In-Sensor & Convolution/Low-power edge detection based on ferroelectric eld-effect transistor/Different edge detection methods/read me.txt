@@ -1,0 +1,3 @@
+1. Install MATLAB software. The installation guide are  available at https://www.mathworks.com/. The code is tested on MATLAB 2022b of Win64.
+2. Run "main_6_edge_detction.m". Usually, this code will take a few minutes to process 200 images.
+3. The outputs are the simulation results of 6 edge detection methods for the 200 images of BSDS500 dataset.
