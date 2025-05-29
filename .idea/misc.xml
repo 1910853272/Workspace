@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.12 (arc1_pyqt-master)" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="pytorch001" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="torch" project-jdk-type="Python SDK" />
 </project>
