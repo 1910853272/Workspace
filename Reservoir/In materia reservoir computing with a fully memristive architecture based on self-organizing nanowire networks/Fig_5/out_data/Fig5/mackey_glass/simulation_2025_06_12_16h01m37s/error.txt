@@ -1,0 +1,18 @@
+ERROR
+Unable to allocate 11.6 MiB for an array with shape (1233, 1233) and data type float64
+
+
+SIMULATION SETUP
+
+tau = 18
+num_virtual_nodes = 20
+steps_training = 920
+steps_forecasting = 1200
+init_active = 1
+update_active = 0
+init_duration = 400
+update_steps_on = 100
+update_steps_off = 200
+pulse_amplitude_min = 1
+pulse_amplitude_max = 6
+delta_t_pot = 0.001

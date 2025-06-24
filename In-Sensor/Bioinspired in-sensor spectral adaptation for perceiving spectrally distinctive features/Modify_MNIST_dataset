@@ -1,0 +1,275 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue May 30 19:03:44 2023
+
+@author: Wang Jialiang
+
+This dataset is adapted from the MNIST database (http://yann.lecun.com/exdb/mnist/) with Creative Commons Attribution-Share Alike 3.0 license (https://creativecommons.org/licenses/by-sa/3.0/). 
+This dataset is licensed under Creative Commons Attribution-Share Alike 3.0 license (https://creativecommons.org/licenses/by-sa/3.0/) upon the request of the source material MNIST database (http://yann.lecun.com/exdb/mnist/). 
+"""
+
+import os
+import sys
+import time
+from tqdm import tqdm
+import numpy as np
+import pandas as pd
+from imageio import v2 as iio
+from matplotlib import pyplot as plt
+import PIL
+from PIL import Image as P_image
+import tensorflow as tf
+from __Mod_route__ import get_root
+
+
+rr=get_root()
+MNIST_Lib_route='# route' # MNIST dataset at local
+Task_name='task_name'
+
+
+"""
+Load and label MNIST dataset
+"""
+#%%
+# load MNIST dataset
+print('\n Reading original data (Train set)')
+MNIST_train_OG=np.load(MNIST_Lib_route+'\\MNIST_train.npy')
+MNIST_test_OG=np.load(MNIST_Lib_route+'\\MNIST_test.npy')
+
+MNIST_train_df = pd.DataFrame(MNIST_train_OG[:,1:], index=MNIST_train_OG[:,0])
+MNIST_test_df = pd.DataFrame(MNIST_test_OG[:,1:], index=MNIST_test_OG[:,0])
+MNIST_train_df_mod = MNIST_train_df.loc[[1,3,5,7,9],:]
+MNIST_test_df_mod = MNIST_test_df.loc[[1,3,5,7,9],:]
+
+Label_train_mod = np.empty((MNIST_train_df_mod.shape[0],1))
+Label_train_mod[:,0] = np.array(MNIST_train_df_mod.index)
+Label_test_mod = np.empty((MNIST_test_df_mod.shape[0],1))
+Label_test_mod[:,0] = np.array(MNIST_test_df_mod.index)
+
+MNIST_train = np.concatenate((Label_train_mod,MNIST_train_df_mod.to_numpy()),axis=1)
+MNIST_test = np.concatenate((Label_test_mod,MNIST_test_df_mod.to_numpy()),axis=1)
+
+for i in range(10):
+    perm_iter = np.random.permutation(MNIST_train.shape[0])
+    MNIST_train = MNIST_train[perm_iter]
+    perm_iter = np.random.permutation(MNIST_test.shape[0])
+    MNIST_test = MNIST_test[perm_iter]
+    #%%
+
+"""
+Trim training set images
+"""
+#%%
+# MNIST_dataset_train = np.load(rr+'\\MNIST_selected'+Task_name+'\\MNIST_selected_train.npy')
+# # shuffle samples (10 times)
+# print('\n Loading dataset')
+# for i in range(10):
+#     perm_iter = np.random.permutation(MNIST_dataset_train.shape[0])
+#     MNIST_dataset_train = MNIST_dataset_train[perm_iter]
+    
+# generate illumination 
+print('\n Generating training set')
+MNIST_train_day=MNIST_train.copy()
+
+MNIST_train_B2=MNIST_train_day/2.55*0.20                                        # mapping image to illumination in the range of 0~20 mW/cm^-2
+MNIST_train_B2=MNIST_train_B2.clip(19,20)                                       # add a minimum background of 5 mW cm^-2 to IR band irradiation 
+
+MNIST_train_B3=MNIST_train_day/2.55*0.4                                         # mapping image to illumination in the range of 0~100 mW/cm^-2
+MNIST_train_B3=MNIST_train_B3.clip(38,100)                                      # add a minimum background of 10 mW cm^-2 to visible band irradiation
+
+MNIST_train_B4=MNIST_train_day/2.55*0.4                                         # mapping image to illumination in the range of 0~100 mW/cm^-2
+MNIST_train_B4=MNIST_train_day.clip(0,100)                                      # add a minimum background of 10 mW cm^-2 to visible band irradiation 
+
+MNIST_train_B5=MNIST_train_day/2.55*0.4                                         # mapping image to illumination in the range of 0~100 mW/cm^-2
+MNIST_train_B5=MNIST_train_B5.clip(10,100)                                      # add a minimum background of 10 mW cm^-2 to visible band irradiation 
+
+# regenerate labels
+MNIST_train_B2[:,0]=MNIST_train_day[:,0]
+MNIST_train_B3[:,0]=MNIST_train_day[:,0]
+MNIST_train_B4[:,0]=MNIST_train_day[:,0]
+MNIST_train_B5[:,0]=MNIST_train_day[:,0]
+print('\n Training set generated')
+
+# # generate nighttime illumination 
+# print('\n Generating training set (nighttime)')
+# MNIST_train_night=MNIST_train.copy()[50000:100000,:]
+
+# MNIST_train_night_B2=MNIST_train_night/2.55*0.2
+# MNIST_train_night_B2=MNIST_train_night_B2.clip(2,100)
+
+# MNIST_train_night_B3=MNIST_train_night/2.55*0.2                                 # set nighttime vis band illumination to 1 10th that of daylight
+# MNIST_train_night_B3=MNIST_train_night_B3.clip(2,100)                           # nighttime background is also set 1 10th of that of daylight 
+
+# # MNIST_train_night_B4=MNIST_train_night/2.55*0.2                               # set nighttime vis band illumination to 1 10th that of daylight
+# # MNIST_train_night_B4=MNIST_train_night_B4.clip(2,100)                         # nighttime background is also set 1 10th of that of daylight 
+
+# # MNIST_train_night_B5=MNIST_train_night/2.55*0.2                               # set nighttime vis band illumination to 1 10th that of daylight
+# # MNIST_train_night_B5=MNIST_train_night_B5.clip(2,100)                         # nighttime background is also set 1 10th of that of daylight 
+
+# # regenerate labels
+# MNIST_train_night_B2[:,0]=MNIST_train_night[:,0]
+# MNIST_train_night_B3[:,0]=MNIST_train_night[:,0]
+# # MNIST_train_night_B4[:,0]=MNIST_train_night[:,0]
+# # MNIST_train_night_B5[:,0]=MNIST_train_night[:,0]
+# print('\n Training set (nighttime) generated')
+
+# # adding interference
+# print('\n Adding interference to nighttime illumination')
+# MNIST_train_interference=MNIST_train_night_B3[25000:50000,1:].reshape((-1,28,28))
+
+# for i in tqdm(range(MNIST_train_interference.shape[0])):
+#     seed_size_x=np.random.randint(12,18)
+#     seed_size_y=np.random.randint(12,18)
+#     seed_x=np.random.randint(0,28-seed_size_x)
+#     seed_y=np.random.randint(0,28-seed_size_y)
+#     MNIST_train_interference[i,seed_x:seed_x+seed_size_x,seed_y:seed_y+seed_size_y]+=200
+    
+# MNIST_train_interference=MNIST_train_interference.clip(0,255)
+# MNIST_train_night_B3[25000:50000,1:]=MNIST_train_interference.reshape((-1,784))
+# # MNIST_train_night_B4[25000:50000,1:]=MNIST_train_interference.reshape((-1,784))
+# # MNIST_train_night_B5[25000:50000,1:]=MNIST_train_interference.reshape((-1,784))
+
+# print('\n finihsed')
+
+# # concatenate visions
+# MNIST_train_B2=np.concatenate((MNIST_train_day_B2,MNIST_train_night_B2),axis=0)
+# MNIST_train_B3=np.concatenate((MNIST_train_day_B3,MNIST_train_night_B3),axis=0)
+# # MNIST_train_B4=np.concatenate((MNIST_train_day_B4,MNIST_train_night_B4),axis=0)
+# # MNIST_train_B5=np.concatenate((MNIST_train_day_B5,MNIST_train_night_B5),axis=0)
+
+MNIST_train_B2_img=MNIST_train_B2[:,1:].reshape((-1,28,28))
+MNIST_train_B3_img=MNIST_train_B3[:,1:].reshape((-1,28,28))
+MNIST_train_B4_img=MNIST_train_B4[:,1:].reshape((-1,28,28))
+MNIST_train_B5_img=MNIST_train_B5[:,1:].reshape((-1,28,28))
+
+# save trimed dataset to local directory 
+print('\n Saving trimed images into datasheet')
+outdir_trim=rr+'\MNIST_trimed'+Task_name
+if not os.path.exists(outdir_trim):
+    os.mkdir(outdir_trim)
+    
+np.save(outdir_trim+'\\Train_IR_jammed_B2.npy',MNIST_train_B2)
+np.save(outdir_trim+'\\Train_IR_jammed_B3.npy',MNIST_train_B3)
+np.save(outdir_trim+'\\Train_IR_jammed_B4.npy',MNIST_train_B4)
+np.save(outdir_trim+'\\Train_IR_jammed_B5.npy',MNIST_train_B5)
+
+np.save(outdir_trim+'\\Train_IR_jammed_B2_img.npy',MNIST_train_B2_img)
+np.save(outdir_trim+'\\Train_IR_jammed_B3_img.npy',MNIST_train_B3_img)
+np.save(outdir_trim+'\\Train_IR_jammed_B4_img.npy',MNIST_train_B4_img)
+np.save(outdir_trim+'\\Train_IR_jammed_B5_img.npy',MNIST_train_B5_img)
+    #%%
+
+
+"""
+Trim testing set images
+"""
+#%%
+# MNIST_test = np.load(rr+'\\MNIST_selected'+Task_name+'\\MNIST_selected_test.npy')
+# # shuffle samples (10 times)
+# for i in range(10):
+#     perm_iter = np.random.permutation(MNIST_test.shape[0])
+#     MNIST_test = MNIST_test[perm_iter]
+# generate daylight illumination 
+print('\n Generating testing set')
+MNIST_test_day=MNIST_test.copy()                                                # Duplicating test set into 3 scenarioes to avoid the influence of sample-to-sample variation on classification results
+MNIST_test_B2=MNIST_test_day/2.55*0.2                                           # mapping image to illumination in the range of 0~20 mW/cm^-2
+MNIST_test_B2=MNIST_test_B2.clip(20,20)                                         # add a minimum background of 5 mW cm^-2 to IR band irradiation 
+
+MNIST_test_B3=MNIST_test_day/2.55*0.4                                           # mapping image to illumination in the range of 0~100 mW/cm^-2
+MNIST_test_B3=MNIST_test_B3.clip(38,100)                                        # add a minimum background of 10 mW cm^-2 to visible band irradiation 
+
+MNIST_test_B4=MNIST_test_day/2.55*0.4                                           # mapping image to illumination in the range of 0~100 mW/cm^-2
+MNIST_test_B4=MNIST_test_B4.clip(0,100)                                         # add a minimum background of 10 mW cm^-2 to visible band irradiation 
+
+MNIST_test_B5=MNIST_test_day/2.55*0.4                                           # mapping image to illumination in the range of 0~100 mW/cm^-2
+MNIST_test_B5=MNIST_test_B5.clip(10,100)                                        # add a minimum background of 10 mW cm^-2 to visible band irradiation 
+
+# regenerate labels
+MNIST_test_B2[:,0]=MNIST_test_day[:,0]
+MNIST_test_B3[:,0]=MNIST_test_day[:,0]
+MNIST_test_B4[:,0]=MNIST_test_day[:,0]
+MNIST_test_B5[:,0]=MNIST_test_day[:,0]
+
+print('\n Testing set generated')
+
+# # generate nighttime illumination 
+# print('\n Generating testing set (nighttime)')
+# MNIST_test_night=MNIST_test.copy()
+# MNIST_test_night_B2=MNIST_test_night/2.55*0.2
+# MNIST_test_night_B2=MNIST_test_night_B2.clip(2,100)
+
+# MNIST_test_night_B3=MNIST_test_night/2.55*0.2                                   # set nighttime vis band illumination to 1 10th that of daylight
+# MNIST_test_night_B3=MNIST_test_night_B3.clip(2,100)                             # nighttime background is also set 1 10th of that of daylight 
+
+# # MNIST_test_night_B4=MNIST_test_night/2.55*0.2                                 # set nighttime vis band illumination to 1 10th that of daylight
+# # MNIST_test_night_B4=MNIST_test_night_B4.clip(2,100)                           # nighttime background is also set 1 10th of that of daylight 
+
+# # MNIST_test_night_B5=MNIST_test_night/2.55*0.2                                 # set nighttime vis band illumination to 1 10th that of daylight
+# # MNIST_test_night_B5=MNIST_test_night_B5.clip(2,100)                           # nighttime background is also set 1 10th of that of daylight 
+
+# # regenerate labels
+# MNIST_test_night_B2[:,0]=MNIST_test_night[:,0]
+# MNIST_test_night_B3[:,0]=MNIST_test_night[:,0]
+# # MNIST_test_night_B4[:,0]=MNIST_test_night[:,0]
+# # MNIST_test_night_B5[:,0]=MNIST_test_night[:,0]
+
+# print('\n Testing set (nighttime) generated')
+
+# # generate interference illumination
+# print('\n Adding interference to nighttime illumination')
+
+# MNIST_test_interference_B2=MNIST_test_night_B2.copy()
+# MNIST_test_interference_B3=MNIST_test_night_B3.copy()
+# # MNIST_test_interference_B4=MNIST_test_night_B4.copy()
+# # MNIST_test_interference_B5=MNIST_test_night_B5.copy()
+
+# MNIST_interference=MNIST_test_interference_B3[:,1:].reshape((-1,28,28))
+
+# for i in tqdm(range(QD_interference.shape[0])):
+#     seed_size_x=np.random.randint(12,18)
+#     seed_size_y=np.random.randint(12,18)
+#     seed_x=np.random.randint(0,28-seed_size_x)
+#     seed_y=np.random.randint(0,28-seed_size_y)
+#     QD_interference[i,seed_x:seed_x+seed_size_x,seed_y:seed_y+seed_size_y]+=200
+    
+# MNIST_interference=MNIST_interference.clip(2,255)  
+# MNIST_test_interference_B3[:,1:]=QD_interference.reshape((-1,784))
+# # MNIST_test_interference_B4[:,1:]=QD_interference.reshape((-1,784))
+# # MNIST_test_interference_B5[:,1:]=QD_interference.reshape((-1,784))
+
+# print('\n finihsed')
+
+# # concatenate visions
+# MNIST_test_B2=np.concatenate((MNIST_test_day_B2,MNIST_test_night_B2,
+#                                    MNIST_test_interference_B2),axis=0)
+# MNIST_test_B3=np.concatenate((MNIST_test_day_B3,MNIST_test_night_B3,
+#                                     MNIST_test_interference_B3),axis=0)
+# # MNIST_test_B4=np.concatenate((MNIST_test_day_B4,MNIST_test_night_B4,
+# #                                    MNIST_test_interference_B4),axis=0)
+# # MNIST_test_B5=np.concatenate((MNIST_test_day_B5,MNIST_test_night_B5,
+# #                                     MNIST_test_interference_B5),axis=0)
+
+MNIST_test_seed_img=MNIST_test[:,1:].reshape((-1,28,28))
+MNIST_test_B2_img=MNIST_test_B2[:,1:].reshape((-1,28,28))
+MNIST_test_B3_img=MNIST_test_B3[:,1:].reshape((-1,28,28))
+MNIST_test_B4_img=MNIST_test_B4[:,1:].reshape((-1,28,28))
+MNIST_test_B5_img=MNIST_test_B5[:,1:].reshape((-1,28,28))
+
+# save trimed dataset to local directory 
+print('\n Saving trimed images into datasheet')
+outdir_trim=rr+'\MNIST_trimed'+Task_name
+if not os.path.exists(outdir_trim):
+    os.mkdir(outdir_trim)
+
+
+np.save(outdir_trim+'\\Test_IR_jammed_B2.npy',MNIST_test_B2)
+np.save(outdir_trim+'\\Test_IR_jammed_B3.npy',MNIST_test_B3)
+np.save(outdir_trim+'\\Test_IR_jammed_B4.npy',MNIST_test_B4)
+np.save(outdir_trim+'\\Test_IR_jammed_B5.npy',MNIST_test_B5)
+
+np.save(outdir_trim+'\\Test_IR_jammed_seed_img.npy',MNIST_test_seed_img)
+np.save(outdir_trim+'\\Test_IR_jammed_B2_img.npy',MNIST_test_B2_img)
+np.save(outdir_trim+'\\Test_IR_jammed_B3_img.npy',MNIST_test_B3_img)
+np.save(outdir_trim+'\\Test_IR_jammed_B4_img.npy',MNIST_test_B4_img)
+np.save(outdir_trim+'\\Test_IR_jammed_B5_img.npy',MNIST_test_B5_img)
+    #%%

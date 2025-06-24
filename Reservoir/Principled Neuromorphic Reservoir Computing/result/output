@@ -1,0 +1,85 @@
++ python -u main.py
+Product representation, training NRMSE: 9.977375407815236e-05
+Product representation, test NRMSE: 0.020356804503215555
+Distributed representation, training NRMSE: 0.00011350134131676704
+Distributed representation, test NRMSE: 0.02999975620193868
+Product representation, training NRMSE: 0.0012157040897222474
+Product representation, test NRMSE: 0.009589167741263593
+Distributed representation, training NRMSE: 0.0009565459973109937
+Distributed representation, test NRMSE: 0.004923357944757403
+Generating, compiling, and loading C code.
+Using default integration parameters.
+Product representation, training NRMSE: 0.004046684146960102
+Product representation, test NRMSE: 0.3617233025006835
+Distributed representation, training NRMSE: 0.0022508539940892104
+Distributed representation, test NRMSE: 0.13742625046795062
+Product representation, training NRMSE: tensor(1.0896e-06, dtype=torch.float64)
+Product representation, test NRMSE: tensor(0.0722, dtype=torch.float64)
+Distributed representation, training NRMSE: tensor(7.0587e-06, dtype=torch.float64)
+Distributed representation, test NRMSE: tensor(0.0891, dtype=torch.float64)
+Echo state network, training NRMSE: tensor(1.7559e-06, dtype=torch.float64)
+Echo state network, test NRMSE: tensor(0.0658, dtype=torch.float64)
+Product representation, train NRMSE 0.009934620698980599
+Product representation, test NRMSE 0.01116544470874055
+Distributed representation, train NRMSE 0.009936319906515707
+Distributed representation, test NRMSE 0.011167312714220782
+Product representation, training NRMSE: 9.977375407815236e-05
+Product representation, test NRMSE: 0.020356804503215555
+Polynomial kernel, training NRMSE: 9.987901609889179e-05
+Polynomial kernel, test NRMSE: 0.013101706303595114
+/code/Figure_S9_Lorenz_verification.py:173: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last five Jacobian evaluations.
+  p_fp0=fsolve(func_pr, t_fp0)
+/code/Figure_S9_Lorenz_verification.py:173: RuntimeWarning: The iteration is not making good progress, as measured by the 
+  improvement from the last ten iterations.
+  p_fp0=fsolve(func_pr, t_fp0)
+
+RC-PR: mean, meanerr, fp1 nL2 distance: 0.0032755443810292746 0.001910162352126738
+RC-PR: mean, meanerr, fp2 nL2 distance: 0.0016816914009147531 0.00047708128269249454
+RC-PR: mean, meanerr, fp0 nL2 distance: 0.00776055264359521 0.0009428028917381735
+
+RC-DR: mean, meanerr, fp1 nL2 distance: 0.002670746250343591 0.001237207253316775
+RC-DR: mean, meanerr, fp2 nL2 distance: 0.001536940726150458 0.00035542125597720403
+RC-DR: mean, meanerr, fp0 nL2 distance: 0.006664409124303561 0.000603439022835187
+
+RC-PR: mean, meanerr, fp1 [-0.00039141 -0.00026821 -0.00068092] [0.0011297  0.00065998 0.00142735]
+RC-PR: mean, meanerr, fp2 [-0.00097749 -0.00027226  0.0011773 ] [0.00022933 0.00015613 0.0003934 ]
+RC-PR: mean, meanerr, fp0 [-4.41954787e-05  8.89437560e-05  6.26938367e-04] [0.00012252 0.000688   0.00099938]
+
+RC-DR: mean, meanerr, fp1 [-0.00062518 -0.00047143  0.00066372] [0.00100229 0.00071511 0.0002748 ]
+RC-DR: mean, meanerr, fp2 [-7.91910969e-05  1.04448201e-04  9.74987610e-04] [0.00024067 0.00016072 0.00023773]
+RC-DR: mean, meanerr, fp0 [ 1.52578793e-04 -7.09376606e-05  5.95159400e-03] [0.00024067 0.00016072 0.00023773]
+
+RC-PR: nL2 distance to mean, meanerr, fp1 0.0008299373152198384 0.0019362655194810792
+RC-PR: nL2 distance to mean, meanerr, fp2 0.0015542342658851846 0.0004813844289568426
+RC-PR: nL2 distance to mean, meanerr, fp0 0.0006347566049533373 0.00121947115854975
+
+RC-DR: nL2 distance to mean, meanerr, fp1 0.0010264605481598746 0.001261536535510405
+RC-DR: nL2 distance to mean, meanerr, fp2 0.000983758860963553 0.00037452412765023445
+RC-DR: nL2 distance to mean, meanerr, fp0 0.005953972083979813 0.0006736351447728817
+Product representation, test NRMSE: 0.020367604573041577
+Distributed representation, test NRMSE: 0.06778870048984152
+Training step 0
+Training step 1
+Training step 2
+Training step 3
+Training step 4
+Training step 5
+Training step 6
+Training step 7
+Training step 8
+Training step 9
+Training step 10
+Training step 11
+Training step 12
+Training step 13
+Training step 14
+Training step 15
+Training step 16
+Training step 17
+Training step 18
+Training step 19
+Training step 20
+standard deviation for x,y,z: 7.891361392051227 8.948643913305572 8.507644946361543
+Product representation, test NRMSE: 0.033947526703783454
+Distributed representation, test NRMSE: 0.02932514057776871
