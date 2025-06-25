@@ -1,22 +1,17 @@
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import StratifiedKFold
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import roc_auc_score, accuracy_score, recall_score, \
-    precision_score, f1_score, cohen_kappa_score, confusion_matrix
-import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 import torch.nn.functional as F
-from sklearn.manifold import TSNE
-
-# 设置中文字体（替换为系统可用的字体）
-plt.rcParams["font.family"] = ["Arial", "sans-serif"]  # 替换为常用字体
+from sklearn.model_selection import StratifiedKFold
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import roc_auc_score, accuracy_score, recall_score, precision_score, f1_score, cohen_kappa_score, confusion_matrix
+import matplotlib.pyplot as plt
 
 # 1. 读取数据
-data = pd.read_csv('reshaped_T1_features2.csv')
+data = pd.read_csv('reshaped_fMRI_features.csv')
 
 # 2. 数据预处理 - 保留空间结构，使用前90个regions，并包含volume列
 feature_cols = [col for col in data.columns if col not in ['subject_id', 'group', 'modality', 'region_id',
@@ -83,7 +78,6 @@ class BrainDataset(Dataset):
 
     def __getitem__(self, idx):
         # 添加空间维度，将 (n_regions, n_features) 转换为 (1, n_regions, n_features)
-        # 对于90个regions，我们可以使用 5x5x4 的三维结构 (5*5*4=100)
         spatial_dim_x = 5
         spatial_dim_y = 5
         spatial_dim_z = 4
@@ -154,7 +148,8 @@ class Brain3DCNN(nn.Module):
 
         return x
 
-# 6. 训练函数
+
+# 5. 训练函数
 def train_model(model, train_loader, val_loader, criterion, optimizer, device, epochs=200):
     best_val_auc = 0.0
     best_model = None
@@ -202,8 +197,7 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, device, e
     model.load_state_dict(best_model)
     return model
 
-
-# 7. 执行三个二分类实验（带5折交叉验证）
+# 6. 执行三个二分类实验（带5折交叉验证）
 results = {}
 
 for task_name, task_config in binary_tasks.items():
@@ -280,7 +274,7 @@ for task_name, task_config in binary_tasks.items():
         acc = accuracy_score(test_labels, test_preds)
         tpr = recall_score(test_labels, test_preds)  # TPR = Recall = TP / (TP + FN)
         fpr = fp / (fp + tn)  # FPR = FP / (FP + TN)
-        precision = precision_score(test_labels, test_preds)
+        precision = precision_score(test_labels, test_preds, zero_division=0)  # 解决 Precision 计算问题
         f1 = f1_score(test_labels, test_preds)
         kappa = cohen_kappa_score(test_labels, test_preds)
 
@@ -338,7 +332,7 @@ for i, metric in enumerate(metrics_to_plot, 1):
     plt.xticks(rotation=45)
 
 plt.tight_layout()
-plt.savefig('T1_binary_classification_metrics_comparison.png')
+plt.savefig('fMRI_binary_classification_metrics_comparison.png')
 plt.show()
 
 # 9. 可视化特征重要性
@@ -355,7 +349,7 @@ for i, task in enumerate(tasks, 1):
     plt.title(f'{task} - feature_importance')
 
 plt.tight_layout()
-plt.savefig('T1_feature_importance_comparison.png')
+plt.savefig('fMRI_feature_importance_comparison.png')
 plt.show()
 
 # 10. 可视化区域重要性
@@ -372,5 +366,5 @@ for i, task in enumerate(tasks, 1):
     plt.title(f'{task} - region_importance')
 
 plt.tight_layout()
-plt.savefig('T1_region_importance_comparison.png')
+plt.savefig('fMRI_region_importance_comparison.png')
 plt.show()
